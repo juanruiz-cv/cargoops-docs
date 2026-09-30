@@ -23,7 +23,7 @@ docs/
 │   │                             mapa, PDF, notificaciones, performance, escalabilidad
 │   └── ADR/                   ← ADR-001..013 (decisiones arquitectónicas)
 ├── frontend/                  ← arquitectura, componentes, design system, estado,
-│                                 routing, i18n, accesibilidad, SEO, PWA, Storybook
+│                                 routing, i18n, accesibilidad, SEO, PWA
 ├── backend/                   ← arquitectura, módulos, DTOs, API, convenciones,
 │                                 errores, validación, jobs, OpenAPI/Swagger
 ├── ux/                        ← flujos de usuario, pantallas, UX del mapa

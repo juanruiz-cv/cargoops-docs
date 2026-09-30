@@ -397,7 +397,7 @@ TypeScript strict mode · ESLint · Prettier · Conventional Commits (`feat:`, `
 | docs/product/PRD.md · PRODUCT-BACKLOG.md · USER-STORIES.md · USE-CASES.md · BUSINESS-RULES.md | W1 | ✅ creados |
 | docs/architecture/ARCHITECTURE.md · DATABASE.md · SECURITY.md · AUTHORIZATION.md · AUDIT.md · MAP-ENGINE.md · PDF-EXPORT.md · NOTIFICATIONS.md · PERFORMANCE.md · SCALABILITY.md | W2 | ✅ creados |
 | docs/architecture/ADR/ADR-001..013 | W3 | ✅ creados (13) |
-| docs/frontend/FRONTEND-ARCHITECTURE.md · COMPONENTS.md · DESIGN-SYSTEM.md · STATE-MANAGEMENT.md · ROUTING.md · I18N.md · ACCESSIBILITY.md · SEO.md · PWA.md · STORYBOOK.md | W4 | ✅ creados |
+| docs/frontend/FRONTEND-ARCHITECTURE.md · COMPONENTS.md · DESIGN-SYSTEM.md · STATE-MANAGEMENT.md · ROUTING.md · I18N.md · ACCESSIBILITY.md · SEO.md · PWA.md | W4 | ✅ creados |
 | docs/backend/BACKEND-ARCHITECTURE.md · MODULES.md · DTOs.md · API.md · API-CONVENTIONS.md · ERROR-HANDLING.md · VALIDATION.md · JOBS.md · OPENAPI.md | W5 | ✅ creados |
 | docs/ux/USER-FLOWS.md · SCREENS.md · MAP-UX.md | W6 | ✅ creados |
 | docs/brand/BRAND-BOOK.md · DESIGN-TOKENS.md · UI-GUIDELINES.md · MAP-VISUAL-GUIDELINES.md | W7 | ✅ creados |
@@ -409,6 +409,7 @@ Estado FASE 0: **completa** (75 documentos Markdown, cero archivos de código). 
 2026-09-23: ampliación de modelo por secciones 62-70 (distribución M:N Cargo↔Location vía CargoLocation, capacidad por unidad, movimientos parciales) aplicada a MASTER-SPEC y replicada en los grupos documentales.
 2026-09-24: **v0.5 — resolución completa de OQ** (OQ-003/005/006/007/009/010/011/012/013/014/015/016/019/020/021/023/024/026/027/028/031/032/033/034/035/036/043/044/045/046/047): PDF Puppeteer (ADR-013), MinIO (S3), Redis+BullMQ v1 (ADR-012), PWA mínima, es-AR+i18n, flujos núcleo, mapa estático, formularios ADMIN, RPO/RTO, auditoría OPERATOR, presupuestos, UPDATE audit alertas, sin DnD, roles AlertStatus, código inmutable (BR-047), sin conversión (BR-048), percentage derivado (BR-049), 1 carga→1 camión (BR-050), dashboard en vivo (BR-051), Idempotency-Key (BR-052), sin landing, ruta hija movimiento, polling 30 s, sobreocupación ADMIN+10% (BR-036), umbrales 70/90, listado ubicaciones, notificaciones in-app v1.
 2026-09-28: estándares de documentación de tooling agregados al mapa (§17): `backend/OPENAPI.md` (W5) — estrategia oficial de OpenAPI/Swagger, tags, schemas por DTO, gate de sincronización con el código; `frontend/STORYBOOK.md` (W4) — estándar de Storybook (addons, args, fixtures con datos §5, matriz de estados por componente, a11y, responsive, regresión visual). No altera dominio, BR, enums, contratos de API ni el roadmap.
+2026-09-30: `frontend/STORYBOOK.md` eliminado del mapa (§17) y del índice (README). El frontend no adopta Storybook: la documentación viva de componentes es `COMPONENTS.md` (contrato canónico, §6.x por componente) + specs unitarias `*.spec.ts`, y la verificación va por tests y accesibilidad directa, no por catálogo de stories. La entrada del 2026-09-28 queda como registro histórico; el estándar dejó de aplicarse. No altera dominio, BR, enums, contratos de API ni el roadmap.
 
 ---
 
