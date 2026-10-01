@@ -2,7 +2,7 @@
 
 > Fuente: `docs/roadmap/ROADMAP.md` (criterios de salida, dependencias, solapamientos) y `docs/MASTER-SPEC.md` §18/§19 (orden de fases y esquema de IDs de backlog).
 > Convención de IDs: **Hito** `P<N>-H<k>` · **Tarea** `P<N>-T<k>` · **Epic** `EPIC-NNN` · **Feature** `FEATURE-00N` (secuencial canónica — ID-008 resuelta) · **User Story** `US-00N`.
-> ⚠️ IDs EPIC/FEATURE/US propuestos por W10 para alinear fases↔backlog (MASTER-SPEC §19). La numeración **secuencial** de `product/PRODUCT-BACKLOG.md` quedó ratificada como canónica (ID-008, 2026-09-23 — ver PHS-D1 en la sección 17).
+> ⚠️ Numeración EPIC canónica: la **secuencial** de `product/PRODUCT-BACKLOG.md` (ID-008, 2026-09-23 — ver PHS-D1 en la sección 17). Los EPIC de las cabeceras de fase siguen esa asignación; la divergencia arranca en EPIC-004 (Camiones es epic propio dentro de PHASE 3) y corre hasta EPIC-013 (Configuración, en PHASE 11). Las fases 12/13/14 son transversales/futura: **no tienen EPIC** (el backlog llega hasta `EPIC-001…013`).
 
 ---
 
@@ -64,7 +64,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: ADR-008 (JWT+refresh) y ADR-009 (RBAC). Los guards frontend NO autorizan; solo mejoran UX (BR-009). Usar `Permission` codes tipo `cargo.create` (§4.1).
 - **Bloqueos**: ninguno.
 
-## 7. PHASE 3 — Cargo Management (EPIC-003)
+## 7. PHASE 3 — Cargo Management (EPIC-003/004)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -79,7 +79,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: código = string (nunca entero, §4.4-1). Estados separados de ubicación (§4.4-2). Observación como entidad propia (§4.4-3).
 - **Bloqueos**: ninguno — OQ-001 (**resuelta v0.5** → BR-002), OQ-003 (**resuelta v0.5**), OQ-004 (**resuelta v0.5** → BR-043, `EXITED` terminal) y OQ-002 (resuelta v0.2: la parcialidad se modela vía CargoLocation (BR-032), sin `cargo.locationId` único).
 
-## 8. PHASE 4 — Locations (EPIC-004)
+## 8. PHASE 4 — Locations (EPIC-005)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -95,7 +95,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: Location es la abstracción para todo espacio (§4.4-7); ningún módulo se acopla a sectores específicos. Coordenadas x/y/w/h ya definidas en el modelo para el mapa (fase 6). La ocupación es **derivada** (`occupiedCapacity` = Σ CargoLocation activos en unidad compatible, BR-033/035): nunca se almacena como contador manual.
 - **Bloqueos**: ninguno — OQ-009/OQ-041 (**resuelta v0.5** → BR-041), OQ-014, OQ-043 y OQ-045 (todas **resueltas v0.5**).
 
-## 9. PHASE 5 — Movements (EPIC-005)
+## 9. PHASE 5 — Movements (EPIC-006)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: Movement 1:1 Observation (§4.2). MovementKind v1 puede reducirse a MOVE + razones tipadas (§4.3 — DECISIÓN PENDIENTE de modelado documentada en el ADR de dominio; ver MASTER-SPEC §4.3). La distribución es M:N (BR-032): los movimientos ya no actualizan un `cargo.locationId` único; el segmento destino se registra vía CargoLocation (P5-H6). El estado PARTIALLY_UNLOADED (§7) y el residual en camión se derivan de `totalQuantity − Σ CargoLocation activos` (BR-038, OQ-042). Reversión nunca hard-delete (BR-013).
 - **Bloqueos**: ninguno — OQ-041/042/004/003/043/044/045 todas **resueltas v0.5** (BR-041, BR-042, BR-043, sin conversión de unidades, `percentage` derivado). OQ-002 resuelta (v0.2): parcialidad vía CargoLocation.
 
-## 10. PHASE 6 — Operational Map (EPIC-006)
+## 10. PHASE 6 — Operational Map (EPIC-007)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -126,7 +126,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: Motor preparado para futuro (rutas, zonas, cámaras, sensores — §11.5). Mapa NO depende solo del color (§13): iconos, patrones, labels.
 - **Bloqueos**: ninguno (OQ-015 **resuelta v0.5**: mapa estático, sin interacción de edición).
 
-## 11. PHASE 7 — Dashboard (EPIC-007)
+## 11. PHASE 7 — Dashboard (EPIC-008)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -138,7 +138,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: Sin cálculos en frontend: el backend agrega (no lógica crítica en UI). Reusa CapacityCalculator (P4-T2).
 - **Bloqueos**: ninguno (OQ-009 y OQ-014 **resueltas v0.5**).
 
-## 12. PHASE 8 — History + Audit (EPIC-008)
+## 12. PHASE 8 — History + Audit (EPIC-009)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -150,7 +150,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: ADR-010 (audit log) y ADR-011 (soft delete). Reversión usa MovementKind.REVERSION (no borra).
 - **Bloqueos**: ninguno.
 
-## 13. PHASE 9 — Alerts (EPIC-009)
+## 13. PHASE 9 — Alerts (EPIC-010)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -163,7 +163,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: ADR-012 (background jobs) condicionado a OQ-007. El cálculo de permanencia usa entryDate por defecto (BR-015).
 - **Bloqueos**: ninguno — OQ-008, OQ-007 y OQ-011 **resueltas v0.5**.
 
-## 14. PHASE 10 — PDF (EPIC-010)
+## 14. PHASE 10 — PDF (EPIC-011)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -175,7 +175,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: PDF siempre generado en backend (nunca en cliente) — no lógica crítica en UI. Envelope de error según §10.
 - **Bloqueos**: ninguno (OQ-005 **resuelta v0.5**: HTML→PDF con Chromium/Puppeteer).
 
-## 15. PHASE 11 — Map Editor (EPIC-011)
+## 15. PHASE 11 — Map Editor (EPIC-012)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
@@ -188,7 +188,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: Solo ADMIN (BR-011/012). Reutiliza el motor SVG de PHASE 6 (evita duplicación — DRY). El plano vive como datos estructurados, no imagen (BR-020).
 - **Bloqueos**: ninguno (OQ-015 **resuelta v0.5**: mapa estático, sin interacción de edición).
 
-## 16. PHASE 12/13/14 — QA, Production, Mobile (EPIC-012/013/014)
+## 16. PHASE 12/13/14 — QA, Production, Mobile (sin EPIC: fases transversales/futura)
 
 | Fase | Hitos | Tareas | Descripción | Criterios de aceptación |
 | --- | --- | --- | --- | --- |
@@ -210,8 +210,8 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 
 | # | Pregunta | Impacto | Referencia |
 | --- | --- | --- | --- |
-| PHS-D1 | ~~¿Se ratifica la numeración de IDs propuesta (EPIC-00N por fase; FEATURE/US con prefijo de fase) o W1 define su propia numeración en PRODUCT-BACKLOG.md y W10 alinea este documento?~~ → **RESUELTA (2026-09-23, ID-008)**: se ratifica la **secuencial canónica** de PRODUCT-BACKLOG/PRD (`EPIC-001…013`, `FEATURE-001…030`, `US-001…053`); este documento conserva `P<N>-H<k>`/`P<N>-T<k>` para hitos/tareas y alinea su convención de IDs de features | Coherencia de vínculos EPIC/FEATURE/US en todas las tareas | MASTER-SPEC §19 / ID-008 |
-| PHS-D2 | ~~OQ-002 (carga parcial)~~ → **Resuelta (v0.2)**: distribución vía CargoLocation (BR-032..040), sin CargoItem en v1. Las tareas P3-H2/P5-H2/P5-H4 ya reflejan el modelo de segmentos; revisar al resolver OQ-044/OQ-045. | P3-H2, P5-H2, P5-H4 | OQ-044, OQ-045 |
+| PHS-D1 | ~~¿Se ratifica la numeración de IDs propuesta (EPIC-00N por fase; FEATURE/US con prefijo de fase) o W1 define su propia numeración en PRODUCT-BACKLOG.md y W10 alinea este documento?~~ → **RESUELTA (2026-09-23, ID-008)**: se ratifica la **secuencial canónica** de PRODUCT-BACKLOG/PRD (`EPIC-001…013`, `FEATURE-001…030`, `US-001…053`); este documento conserva `P<N>-H<k>`/`P<N>-T<k>` para hitos/tareas y **sus cabeceras de fase ya usan la asignación EPIC canónica del backlog** (PB-D2/PBQ-01) | Coherencia de vínculos EPIC/FEATURE/US en todas las tareas | MASTER-SPEC §19 / ID-008 |
+| PHS-D2 | ~~OQ-002 (carga parcial)~~ → **Resuelta (v0.2)**: distribución vía CargoLocation (BR-032..040), sin CargoItem en v1. Las tareas P3-H2/P5-H2/P5-H4 ya reflejan el modelo de segmentos; la revisión prevista quedó cerrada con OQ-044/OQ-045 (**resueltas v0.5**). | P3-H2, P5-H2, P5-H4 | OQ-044, OQ-045 (resueltas v0.5) |
 | PHS-D3 | ~~OQ-004 (egreso/retiro): si existe en v1, se agrega un hito P5-H6 (EXIT)~~ → **RESUELTA (2026-09-24, OQ-004 → BR-043)**: el egreso **sí existe** en v1 (movimiento `EXIT` con observación obligatoria, `exitDocumentRef?` opcional, `EXITED` terminal); el hito P5-H6 (EXIT) queda incorporado y la máquina de estados §7 revisada. | Hito/UI de egreso | OQ-004 |
 | PHS-D4 | MovementKind v1: ¿se adopta el set completo (§4.3) o la reducción MOVE + razones tipadas? | Contratos API de movements | MASTER-SPEC §4.3 |
 | PHS-D5 | PHASE 12/13: ¿los criterios de aceptación de release incluyen certificación de accesibilidad formal (auditoría externa) o la interna de QA es suficiente para v1? | DoD de release | 🔶 Residual local (sin OQ) |
