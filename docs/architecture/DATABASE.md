@@ -452,7 +452,7 @@ Notas:
 
 | Riesgo | Mitigación |
 | --- | --- |
-| `cargo.code` único exacto incompatible con códigos reales que colisionan tras normalizar | OQ-001 bloqueante; diseño permite índice funcional sin migración de estructura |
+| `cargo.code` único exacto incompatible con códigos reales que colisionan tras normalizar | **OQ-001 resuelta v0.5** (BR-002: unicidad por normalización, índice funcional sin migración de estructura); ya no bloquea |
 | Crecimiento de `audit_logs` y `movements` (append-only) | Índices por rango, poda/retención pendiente (AUDIT.md §5.8), posible particionado futuro |
 | `occupied_capacity` derivado puede divergir si una transacción falla a medias | Todo recálculo ocurre en la misma `$transaction` (ARCHITECTURE.md §5.10); será agregación query-time §5.9 con tests de integridad en QA |
 | Suma distribuida > total por carga (BR-034) si una validación se omite | Validación centralizada en servicio `cargo` + vista de control documentada (§5.8); el índice único parcial evita duplicados activos |

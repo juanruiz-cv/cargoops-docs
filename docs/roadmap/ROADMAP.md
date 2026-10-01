@@ -165,7 +165,7 @@ graph TB
 | --- | --- |
 | Prioridad | P0 |
 | Dependencias | PHASE 2 |
-| Riesgo | 🔴 (reglas de negocio centrales: unicidad de código BR-002 — OQ-001; egreso/retiro — OQ-004) |
+| Riesgo | 🔴 (reglas de negocio centrales: unicidad de código BR-002; egreso/retiro — OQ-001/OQ-004 **resueltas v0.5** → BR-043 movimiento `EXIT`/`EXITED`) |
 
 - **Objetivo**: dominio de carga completo: CRUD de cargas (código string, estados §7), módulo `trucks` (camión ↔ cargas, OQ-003), búsqueda/filtros/paginación, detalle con observaciones sin movimiento, soft delete + auditoría (BR-013, ADR-010/011).
 - **Entregables principales**: módulo `cargo` (controller/service/repository/DTOs/validators); módulo `trucks`; validaciones BR-001/BR-002/BR-013; listado con filtros (code, status, ubicación vía segmentos CargoLocation — BR-032, truckId) + paginación §10; fixtures de las cargas de ejemplo §5; CargoTable/CargoSearch/CargoFilters/CargoStatusBadge/CargoDetail básicos.
@@ -179,7 +179,7 @@ graph TB
 | --- | --- |
 | Prioridad | P0 |
 | Dependencias | PHASE 1 (modelo de datos, seed), PHASE 2 |
-| Riesgo | 🟡 (capacidad por unidad y unidades compatibles: OQ-009/OQ-041, OQ-014, OQ-043) |
+| Riesgo | 🟡 (capacidad por unidad y unidades compatibles — OQ-009/OQ-041/OQ-014/OQ-043 **resueltas v0.5** → unidades por tipo + `PERCENT` sin conversión en v1) |
 
 - **Objetivo**: entidad Location completa (abstracción de plazoleta/sector/área especial, §4.4-7): CRUD y ciclo de vida (ACTIVE/INACTIVE/MAINTENANCE), **capacidad por unidad** con `occupiedCapacity`/`availableCapacity` derivados (BR-033/035, §4.1), **entidad `CargoLocation`** (relación M:N Cargo↔Location, BR-032), consultas de distribución (BR-040) y validaciones BR-004/BR-005.
 - **Entregables principales**: módulo `locations`; seed formal de las 17 ubicaciones (§5) + seed de distribución §5 (029TERRA26/032TERRA26/050TERRA26 en Sector 3/4); entidad CargoLocation (migración + seed, BR-032); servicio de capacidad por unidad (CapacityCalculator → occupiedCapacity/availableCapacity, unidades compatibles, BR-033/035); consultas de distribución (BR-040): `GET /api/v1/cargos/:id/locations`, `GET /api/v1/locations/:id/cargos`, `GET /api/v1/locations/:id/capacity`; auditoría de cambios de capacidad/ubicación; LocationCard + CapacityIndicator + DistributionPanel/LocationOccupancyCard (ocupada/disponible por unidad).
@@ -249,7 +249,7 @@ graph TB
 | --- | --- |
 | Prioridad | P2 |
 | Dependencias | PHASE 5, PHASE 7 |
-| Riesgo | 🟡 (jobs periódicos: OQ-007; reglas de permanencia: OQ-008) |
+| Riesgo | 🟡 (jobs periódicos; reglas de permanencia — OQ-007/OQ-008 **resueltas v0.5** → BullMQ + reglas documentadas) |
 
 - **Objetivo**: alertas de rezago (permanencia > 30 días → STALE_30D, BR-014/015) sin auto-movimiento (decisión humana + observación) y **alertas de capacidad** (CAPACITY sobre `occupiedCapacity` derivado, §9), ciclo de vida OPEN→ACKNOWLEDGED→RESOLVED/DISMISSED, notificaciones in-app.
 - **Entregables principales**: motor de alertas (job periódico) + módulo `alerts` (STALE_30D + CAPACITY); módulo `notifications` (in-app, OQ-011); AlertCard + sección de alertas en dashboard; flujo humano "mover a Rezago" integrado con PHASE 5.
@@ -263,7 +263,7 @@ graph TB
 | --- | --- |
 | Prioridad | P2 |
 | Dependencias | PHASE 8, PHASE 3, PHASE 2 |
-| Riesgo | 🟡 (estrategia de generación: OQ-005/ADR-013; permisos de exportación BR-018) |
+| Riesgo | 🟡 (estrategia de generación HTML→PDF; permisos de exportación BR-018 — OQ-005/ADR-013 **resuelta v0.5**) |
 
 - **Objetivo**: exportación PDF autorizada por rol (BR-018): detalle de carga, historial de movimientos y reportes permitidos.
 - **Entregables principales**: servicio backend de PDF (contrato y estrategia según ADR-013); `POST /api/v1/cargos/:id/export-pdf` con validación de permisos; PdfExportButton en UI; manejo de errores y retry.

@@ -74,7 +74,8 @@ Detalle: [`roadmap/ROADMAP.md`](roadmap/ROADMAP.md) · [`roadmap/PHASES.md`](roa
 - ✅ 74 documentos Markdown creados y verificados (todos los grupos W1–W10 + orquestador).
 - ✅ Cero archivos de código en `cargoops-docs/` (solo `.md`).
 - ✅ Decisiones pendientes e inconsistencias detectadas centralizadas en `OPEN-QUESTIONS.md`.
-- ✅ Inconsistencias documentales ID-001…ID-010 alineadas en v0.4 (2026-09-23); siguen abiertas las OQ señaladas en `OPEN-QUESTIONS.md` (🟡/🟢 y OQ-043…047, no bloqueantes para el arranque).
+- ✅ Inconsistencias documentales ID-001…ID-010 alineadas en v0.4 (2026-09-23).
+- ✅ **v0.5 (2026-09-24): no quedan OQ abiertas.** Todas las OQ e ID figuran `✅ Resuelta` en `OPEN-QUESTIONS.md`; ninguna fase tiene tareas bloqueadas por OQ. Los marcadores 🔴/🟡/🟢 que subsisten en el corpus son **severidad de riesgo**, no bloqueo por open question (ver el bloque `Riesgo` por fase en `roadmap/ROADMAP.md`).
 
 ## Repos futuros (decisión posterior)
 
