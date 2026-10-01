@@ -560,7 +560,7 @@ _Como Operator/Admin, quiero alertas cuando una ubicación se acerca a su capaci
 | PBQ-12 | ~~OQ-041: unidad de capacidad por defecto por LocationType y gobernanza de configuración~~ → **RESUELTA (OQ-041 → BR-041, 2026-09-23)**: default por tipo (Sector/Galpón AREA, Plazoleta UNITS) + override | FEATURE-030 (US-051/053), BR-005/033/035 | OQ-041 (resuelta) |
 | PBQ-13 | ~~OQ-042: ¿el camión es Location (`CAMION`) o el residual es derivado?~~ → **RESUELTA (OQ-042 → BR-042, MASTER-SPEC v0.3)**: residual derivado — el camión NO es una ubicación | FEATURE-029 (US-050), BR-038 | OQ-042 (resuelta) |
 | PBQ-14 | ~~OQ-043: sobreocupación administrativa (flag, % extra, rol autorizante, ¿observación?)~~ → **RESUELTA (OQ-043 → BR-036 ampliada, 2026-09-24)**: default **+10%**, **solo ADMIN**, observación obligatoria + auditoría `CAPACITY_CHANGE` | FEATURE-030 (US-052), BR-036 | OQ-043 (resuelta) |
-| PBQ-15 | ~~OQ-044: conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión v1** — unidades compatibles o `PERCENT`; `INCOMPATIBLE_UNIT` 422 | FEATURE-029 (US-049/050), BR-034/035 | OQ-044 (resuelta) |
+| PBQ-15 | ~~OQ-044: conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión v1** — unidades compatibles o `PERCENT`; `UNIT_INCOMPATIBLE` 422 | FEATURE-029 (US-049/050), BR-034/035 | OQ-044 (resuelta) |
 | PBQ-16 | ~~OQ-045: semántica de `percentage` en CargoLocation~~ → **RESUELTA (OQ-045 → BR-049, 2026-09-24)**: derivado de UI e informativo; input solo si unidad `PERCENT` | FEATURE-028 (US-046/048), BR-040 | OQ-045 (resuelta) |
 
 Todas fueron reportadas al orquestador para su incorporación a `OPEN-QUESTIONS.md`.

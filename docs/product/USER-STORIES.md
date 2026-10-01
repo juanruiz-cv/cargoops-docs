@@ -386,7 +386,7 @@ _Como Admin, quiero autorizar sobreocupación puntual con flag y auditoría, par
 | USQ-11 | ~~Unidad de capacidad por defecto por LocationType y gobernanza~~ → **RESUELTA (OQ-041 → BR-041, 2026-09-23)**: default por tipo (Sector/Galpón AREA, Plazoleta UNITS) con override por ubicación | US-051, US-053 | OQ-041 (resuelta) |
 | USQ-12 | ~~¿El camión se modela como Location o el residual es derivado?~~ → **RESUELTA (OQ-042 → BR-042, MASTER-SPEC v0.3)**: residual derivado `inTruckAmount`/`inTruckUnit`; fila informativa, nunca nodo de mapa | US-050 | OQ-042 (resuelta) |
 | USQ-13 | ~~Sobreocupación administrativa: flag, % extra, rol, ¿observación?~~ → **RESUELTA (OQ-043 → BR-036 ampliada, 2026-09-24)**: `allowOverOccupation`, límite default **+10%**, **solo ADMIN**, observación obligatoria + auditoría `CAPACITY_CHANGE` | US-051, US-052 | OQ-043 (resuelta) |
-| USQ-14 | ~~Conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión en v1** — unidades compatibles o `PERCENT`; `INCOMPATIBLE_UNIT` 422 | US-049, US-050 | OQ-044 (resuelta) |
+| USQ-14 | ~~Conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión en v1** — unidades compatibles o `PERCENT`; `UNIT_INCOMPATIBLE` 422 | US-049, US-050 | OQ-044 (resuelta) |
 | USQ-15 | ~~Semántica de `percentage` en CargoLocation (¿autoritativo o derivado?)~~ → **RESUELTA (OQ-045 → BR-049, 2026-09-24)**: `quantity`+`quantityUnit` autoritativas; `percentage` **derivado de UI** e informativo (input solo si unidad `PERCENT`) | US-046, US-048 | OQ-045 (resuelta) |
 
 Todas fueron reportadas al orquestador para su incorporación a `OPEN-QUESTIONS.md`.
