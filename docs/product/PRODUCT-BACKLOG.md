@@ -41,7 +41,7 @@ CargoOps es una plataforma web de gestión operativa de cargas y depósitos en u
 | # | Decisión |
 | --- | --- |
 | PB-D1 | Numeración secuencial `EPIC-001…013` / `FEATURE-001…027` / `US-001…045`, continuando la convención ya usada por el PRD (PRD §9). NO se adopta la propuesta phase-prefixed de `PHASES.md` (PHS-D1/RMP-D1) para no romper las referencias del PRD; se reporta para alineación. |
-| PB-D2 | EPIC-001 = Fundación (Fase 1), coincidiendo con PHASES.md; EPIC-002 = Auth+RBAC (Fase 2) también coincide. La divergencia con PHASES.md empieza en EPIC-004 (ver PBQ-01). |
+| PB-D2 | EPIC-001 = Fundación (Fase 1), coincidiendo con PHASES.md; EPIC-002 = Auth+RBAC (Fase 2) también coincide. La divergencia con PHASES.md empezaba en EPIC-004 (ver PBQ-01): **alineada** — `PHASES.md` ya asigna los EPIC según esta tabla (`EPIC-004` Camiones convive con `EPIC-003` en PHASE 3). |
 | PB-D3 | EPIC-013 = Configuración del sistema (usuarios/roles/parámetros) agrupa FEATURE-026/027 que el PRD no referencia (US-044/045); no altera ningún ID referenciado por el PRD. |
 | PB-D4 | FEATURE-018 (US-030/031) completa el hueco de numeración del PRD entre FEATURE-017 y FEATURE-019 con capacidad "mapa → detalle", coherente con las consultas operacionales de §1.4. |
 | PB-D5 | Prioridades según escala RMP-002: P0 (valor operativo crítico), P1 (alta), P2 (media), P3 (endurecimiento/QA). Fases canónicas §18 del MASTER-SPEC. |
@@ -546,7 +546,7 @@ _Como Operator/Admin, quiero alertas cuando una ubicación se acerca a su capaci
 
 | # | Pregunta | Impacto | Referencia |
 | --- | --- | --- | --- |
-| PBQ-01 | ~~¿Se ratifica la numeración secuencial adoptada en PRD/backlog (EPIC-001…013, FEATURE-001…027, US-001…045) o se alinea a la propuesta phase-prefixed de PHASES.md (`FEATURE-<fase><seq>`)?~~ → **RESUELTA (2026-09-23, ID-008)**: secuencial canónica ratificada; PHASES alinea su convención sin renumerar el backlog | Todos los vínculos EPIC/FEATURE/US entre W1 y W10 | PHS-D1/RMP-D1 — resueltas (ID-008) |
+| PBQ-01 | ~~¿Se ratifica la numeración secuencial adoptada en PRD/backlog (EPIC-001…013, FEATURE-001…027, US-001…045) o se alinea a la propuesta phase-prefixed de PHASES.md (`FEATURE-<fase><seq>`)?~~ → **RESUELTA (2026-09-23, ID-008)**: secuencial canónica ratificada; `PHASES.md` ya alineó su convención **y la asignación EPIC de sus cabeceras de fase** (PB-D2), sin renumerar el backlog | Todos los vínculos EPIC/FEATURE/US entre W1 y W10 | PHS-D1/RMP-D1 — resueltas (ID-008) |
 | PBQ-02 | ~~OQ-001: reglas exactas de unicidad/validación del código de carga~~ → **RESUELTA (OQ-001 → BR-002, 2026-09-23)**: regex `^[A-Z0-9][A-Z0-9./-]{2,31}$`, mayúsculas, único case-insensitive, 3–32 | FEATURE-005 (US-009), BR-002 | OQ-001 (resuelta) |
 | PBQ-03 | ~~OQ-002: carga parcial unidad simple vs CargoItem~~ → **RESUELTA (secciones 62-70)**: distribución vía `CargoLocation`; CargoItem no v1 | FEATURE-013 (US-020), BR-027 [PROPUESTA] | OQ-002 (resuelta) |
 | PBQ-04 | ~~OQ-004: egreso/retiro en v1 (estado EXITED)~~ → **RESUELTA (OQ-004 → BR-043, 2026-09-23)**: sí — `EXIT` con observación obligatoria, `EXITED` terminal | Ciclo de vida completo, BR-028 [PROPUESTA] | OQ-004 (resuelta) |
@@ -560,7 +560,7 @@ _Como Operator/Admin, quiero alertas cuando una ubicación se acerca a su capaci
 | PBQ-12 | ~~OQ-041: unidad de capacidad por defecto por LocationType y gobernanza de configuración~~ → **RESUELTA (OQ-041 → BR-041, 2026-09-23)**: default por tipo (Sector/Galpón AREA, Plazoleta UNITS) + override | FEATURE-030 (US-051/053), BR-005/033/035 | OQ-041 (resuelta) |
 | PBQ-13 | ~~OQ-042: ¿el camión es Location (`CAMION`) o el residual es derivado?~~ → **RESUELTA (OQ-042 → BR-042, MASTER-SPEC v0.3)**: residual derivado — el camión NO es una ubicación | FEATURE-029 (US-050), BR-038 | OQ-042 (resuelta) |
 | PBQ-14 | ~~OQ-043: sobreocupación administrativa (flag, % extra, rol autorizante, ¿observación?)~~ → **RESUELTA (OQ-043 → BR-036 ampliada, 2026-09-24)**: default **+10%**, **solo ADMIN**, observación obligatoria + auditoría `CAPACITY_CHANGE` | FEATURE-030 (US-052), BR-036 | OQ-043 (resuelta) |
-| PBQ-15 | ~~OQ-044: conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión v1** — unidades compatibles o `PERCENT`; `INCOMPATIBLE_UNIT` 422 | FEATURE-029 (US-049/050), BR-034/035 | OQ-044 (resuelta) |
+| PBQ-15 | ~~OQ-044: conversión de unidades en movimientos parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión v1** — unidades compatibles o `PERCENT`; `UNIT_INCOMPATIBLE` 422 | FEATURE-029 (US-049/050), BR-034/035 | OQ-044 (resuelta) |
 | PBQ-16 | ~~OQ-045: semántica de `percentage` en CargoLocation~~ → **RESUELTA (OQ-045 → BR-049, 2026-09-24)**: derivado de UI e informativo; input solo si unidad `PERCENT` | FEATURE-028 (US-046/048), BR-040 | OQ-045 (resuelta) |
 
 Todas fueron reportadas al orquestador para su incorporación a `OPEN-QUESTIONS.md`.

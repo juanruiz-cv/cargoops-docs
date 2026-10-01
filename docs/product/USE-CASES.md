@@ -423,7 +423,7 @@ Convenciones: los flujos alternativos se numeran FA-<n>; las excepciones se expr
 | **Excepciones** | Exceso sobre el residual → 409 `DISTRIBUTION_EXCEEDS_TOTAL` (BR-034) · unidades → 422 `UNIT_INCOMPATIBLE` (BR-035) · capacidad → 409 `CAPACITY_EXCEEDED` (BR-005/036) · sin observación → 400/422 (BR-006/007). |
 | **BR** | BR-005…008, BR-009, BR-016, BR-034, BR-035, BR-037, BR-038, BR-039 |
 | **US** | US-050 (FEATURE-029, Fase 5) |
-| **DECISIÓN PENDIENTE** | OQ-042 → **resuelta (BR-042, MASTER-SPEC v0.3)**: el "en camión" es residual derivado — el camión NO es Location · OQ-044 → **resuelta (BR-048)**: sin conversión en v1, unidades compatibles o `PERCENT` (`INCOMPATIBLE_UNIT` 422). |
+| **DECISIÓN PENDIENTE** | OQ-042 → **resuelta (BR-042, MASTER-SPEC v0.3)**: el "en camión" es residual derivado — el camión NO es Location · OQ-044 → **resuelta (BR-048)**: sin conversión en v1, unidades compatibles o `PERCENT` (`UNIT_INCOMPATIBLE` 422). |
 
 ### UC-031 — Egreso de segmento (retirar una carga de una ubicación)
 
@@ -529,7 +529,7 @@ Convenciones: los flujos alternativos se numeran FA-<n>; las excepciones se expr
 | 14 | ~~OQ-041: unidad por defecto de la capacidad según `LocationType`~~ → **RESUELTA (OQ-041 → BR-041, 2026-09-23)**: default por tipo (Sector/Galpón AREA m², Plazoleta UNITS) + override por ubicación | UC-028, FEATURE-028 | OQ-041 (resuelta) |
 | 15 | ~~OQ-042: camión ¿se modela como Location o el "en camión" es residual derivado?~~ → **RESUELTA (OQ-042 → BR-042, MASTER-SPEC v0.3)**: residual derivado `inTruckAmount`/`inTruckUnit` — el camión NO es una ubicación | UC-030, FEATURE-029 | OQ-042 (resuelta) |
 | 16 | ~~OQ-043: sobreocupación — límite, rol autorizante y observación~~ → **RESUELTA (OQ-043 → BR-036 ampliada, 2026-09-24)**: default **+10%**, **solo ADMIN**, observación obligatoria + auditoría `CAPACITY_CHANGE` | UC-032, FEATURE-030 | OQ-043 (resuelta) |
-| 17 | ~~OQ-044: conversión de unidades en movimientos y descargas parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión en v1** — unidades compatibles o `PERCENT`; `INCOMPATIBLE_UNIT` 422 | UC-029/030, FEATURE-029 | OQ-044 (resuelta) |
+| 17 | ~~OQ-044: conversión de unidades en movimientos y descargas parciales~~ → **RESUELTA (OQ-044 → BR-048, 2026-09-24)**: **sin conversión en v1** — unidades compatibles o `PERCENT`; `UNIT_INCOMPATIBLE` 422 | UC-029/030, FEATURE-029 | OQ-044 (resuelta) |
 | 18 | ~~OQ-045: semántica de `percentage` en la distribución~~ → **RESUELTA (OQ-045 → BR-049, 2026-09-24)**: derivado de UI (quantity/totalQuantity; input solo si unidad `PERCENT`) — no relativo al segmento origen | UC-027/029, FEATURE-028/029 | OQ-045 (resuelta) |
 
 Los pendientes **W1-Q9…W1-Q16** se reportan al orquestador para su incorporación a `OPEN-QUESTIONS.md` (ID tentativo OQ-019…OQ-026).

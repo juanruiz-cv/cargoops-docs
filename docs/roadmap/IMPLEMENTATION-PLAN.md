@@ -22,7 +22,7 @@ Definir el método concreto con el que el equipo (orquestador + agentes de códi
 - No alterar el orden canónico de fases ni los nombres (MASTER-SPEC §18); no crear Tasks que crucen el DoF de una fase sin integrarlo (ROADMAP §3).
 - No inventar reglas de negocio: toda ambigüedad detectada durante el desglose o la implementación se registra como DECISIÓN PENDIENTE y se reporta al orquestador para `OPEN-QUESTIONS.md` (MASTER-SPEC §6/§16).
 - Una Task nunca debe decir «construye toda la aplicación», «implementa la fase completa» ni agrupar UI + API + jobs + tests de varios módulos en una sola unidad.
-- Las Tasks marcadas 🔴 por OQ no se planifican para ejecución hasta resolver la OQ; las 🟡 se ejecutan con el supuesto documentado y se revisan al resolver (RMP-004, PHASES §3).
+- Las Tasks marcadas 🔴 por OQ no se planifican para ejecución hasta resolver la OQ; las 🟡 se ejecutan con el supuesto documentado y se revisan al resolver (RMP-004, PHASES §3). → **Vigente solo como regla de contingente**: en v0.5 no quedan OQ abiertas, así que ninguna Task lleva marca de bloqueo.
 - Toda Task se cierra con su **Definition of Done** (§7 de `DEFINITION-OF-DONE.md`) y sus **Acceptance Criteria** cumplidos; nada se cierra «por aproximación».
 - FASE 0: solo documentación; este plan describe la implementación futura sin crear código.
 
@@ -37,7 +37,7 @@ Definir el método concreto con el que el equipo (orquestador + agentes de códi
 | `docs/product/PRODUCT-BACKLOG.md` | **Creado (W1)** — numeración secuencial EPIC/FEATURE/US (PB-D1); alineación con PHASES pendiente (PBQ-01 / IMP-D1) |
 | `docs/DEFINITION-OF-DONE.md` | DoD por tarea (§7), por funcionalidad (§6), por fase (§4) |
 | `docs/STANDARDS.md` | Estándares de código, commits, branch strategy, PR/Code Review, seguridad |
-| `docs/OPEN-QUESTIONS.md` | OQ-001…045: condiciones de bloqueo de Task (🔴/🟡) |
+| `docs/OPEN-QUESTIONS.md` | OQ-001…047: condiciones de bloqueo de Task (🔴/🟡) — **v0.5: sin OQ abiertas, ningún bloqueo vigente** |
 | `docs/backend/API.md`, `backend/MODULES.md`, `architecture/ARCHITECTURE.md`, `frontend/FRONTEND-ARCHITECTURE.md`, `qa/TEST-PLAN.md` | Contratos y estructura que acotan el alcance de cada Task |
 
 ## 5. Decisions de este plan
@@ -49,7 +49,7 @@ Definir el método concreto con el que el equipo (orquestador + agentes de códi
 | IMP-003 | Toda Task usa el formato de 10 campos del §6; un campo vacío es motivo de rechazo del desglose. |
 | IMP-004 | Tamaño objetivo: 0,5–1,5 días de implementación, un solo módulo/feature, diff revisable en ≤ 30 min (detalle §7). |
 | IMP-005 | Orden de ejecución: respetar el orden topológico de fases y las ventanas W-1…W-6; dentro de una fase, construir base → validaciones → UI → endurecimiento (detalle §9). |
-| IMP-006 | Las Tasks bloqueadas por OQ quedan en cola «bloqueadas» con el ID de OQ; el orquestador las desbloquea solo cuando la OQ se resuelve (RMP-004). |
+| IMP-006 | Las Tasks bloqueadas por OQ quedan en cola «bloqueadas» con el ID de OQ; el orquestador las desbloquea solo cuando la OQ se resuelve (RMP-004). → **Inactivo en v0.5** (no quedan OQ abiertas); se reactiva si se reabre alguna OQ. |
 | IMP-007 | Ningún agente ejecuta en paralelo dos Tasks que toquen los mismos archivos o el mismo módulo; el orquestador serializa por módulo. |
 | IMP-008 | Cada Task cierra con evidencia observable: tests verdes, CI, y checklist de DoD marcada — no con un mensaje de «listo». |
 
@@ -62,7 +62,7 @@ Cada Task se escribe con EXACTAMENTE estos 10 campos, en este orden:
 | 1 | **Task** | ID `P<N>-T<k>` (o `P<N>-T<k>-S<j>` para subtarea) + título imperativo y acotado | Sí |
 | 2 | **Contexto** | Por qué existe, a qué hito/fase pertenece, qué BR/requisito satisface (BR-XXX, FEATURE-XXX/US-XXX) | Sí |
 | 3 | **Inputs** | Documentos del manifest y contratos que el agente DEBE leer antes de tocar código (p. ej. `backend/API.md` contrato X) | Sí |
-| 4 | **Dependencies** | Tasks `P<N>-T<k>` que deben estar cerradas, OQ que la bloquean (🔴/🟡) y módulos cuyo contrato ya no puede cambiar | Sí |
+| 4 | **Dependencies** | Tasks `P<N>-T<k>` que deben estar cerradas, OQ que la bloquean (🔴/🟡 — ninguna en v0.5) y módulos cuyo contrato ya no puede cambiar | Sí |
 | 5 | **Files** | Archivos/directorios a crear o modificar — **lista cerrada, sin genéricos** («todo el repo») | Sí |
 | 6 | **Implementation** | Pasos concretos de implementación, decisiones de diseño incompatibles con el plan (p. ej. dónde va la lógica, qué patrón usar) | Sí |
 | 7 | **Tests** | Unit / integration / E2E / API que la Task debe incluir; casos borde obligatorios (errores, vacíos, permisos) | Sí |
@@ -91,7 +91,7 @@ Base de trazabilidad: todo movimiento inserta Movement + Observation 1:1 y regis
 - P5-T1 (máquina de estados base) — cerrada
 - P4-T2 (CapacityCalculator) — cerrada
 - P3-T2 (alta de cargas) — cerrada
-- Bloqueos OQ: ninguna en este momento (al resolver OQ-044/OQ-045 se revisa la validación de unidades compatibles y la semántica de percentage de esta Task)
+- Bloqueos OQ: ninguno (OQ-044/OQ-045 **resueltas v0.5**: unidades compatibles o `PERCENT`, sin conversión; `quantity` es la fuente de verdad y `percentage` derivado)
 
 ### Files
 - `cargoops-backend/src/movements/movements.controller.ts`
@@ -128,7 +128,7 @@ Base de trazabilidad: todo movimiento inserta Movement + Observation 1:1 y regis
 
 ### 6.2 Tasks de referencia — distribución M:N y capacidad por unidad (BR-032…040)
 
-Estas Tasks modelan el trabajo de las fases 4/5 asociado a la ampliación §§62-70 (MASTER-SPEC v0.2). Se escriben con el formato del §6 para que los agentes las tomen tal cual al abrir las fases 4 y 5; respetan las OQ indicadas (🔴 bloquea ejecución hasta resolver, 🟡 ejecutar con supuesto documentado — RMP-004, IMP-006).
+Estas Tasks modelan el trabajo de las fases 4/5 asociado a la ampliación §§62-70 (MASTER-SPEC v0.2). Se escriben con el formato del §6 para que los agentes las tomen tal cual al abrir las fases 4 y 5. En v0.5 no quedan OQ abiertas (ningún bloqueo vigente). Se conserva RMP-004/IMP-006 como regla de contingente.
 
 **Estrategia de datos sugerida**: usar los seeds de MASTER-SPEC §5 como fixtures de tests de capacidad/ocupación — **029TERRA26** → Sector 3 (20 m², ACTIVE) + Sector 4 (35 m², ACTIVE) con total 55 m²; **Sector 4** (capacity 100 m²) = 029TERRA26 35 m² + 032TERRA26 25 m² + 050TERRA26 20 m² → occupied 80 m² / available 20 m².
 
@@ -146,7 +146,7 @@ Hito P4-H5 (Locations, fase 4). Satisface BR-032/BR-033/BR-040 y MASTER-SPEC §4
 ### Dependencies
 - P4-T1 (módulo locations + entidad Location) — cerrada
 - P1-T3 (schema base Prisma) — cerrada
-- Bloqueo OQ: 🟡 OQ-045 (percentage: almacenado vs derivado)
+- Bloqueo OQ: ninguno — OQ-045 **resuelta v0.5** (`quantity` es la fuente de verdad; `percentage` derivado de UI)
 
 ### Files
 - `cargoops-backend/prisma/schema.prisma` (modelo CargoLocation)
@@ -188,7 +188,7 @@ Hito P4-H6 (Locations, fase 4). Satisface BR-040 (consultas de distribución) y 
 ### Dependencies
 - P4-T5 (entidad CargoLocation) — cerrada
 - P4-T2 (CapacityCalculator por unidad) — cerrada
-- Bloqueos OQ: 🟡 OQ-041/OQ-045 (unidad por defecto y percentage) condicionan el shape exacto de la respuesta
+- Bloqueos OQ: ninguno — OQ-041/OQ-045 **resueltas v0.5** (unidad por defecto por LocationType; `percentage` derivado) fijan el shape exacto de la respuesta
 
 ### Files
 - `cargoops-backend/src/locations/locations.controller.ts` (+ DTOs)
@@ -230,7 +230,7 @@ Hito P5-H6 (Movements, fase 5). Satisface BR-039 (toda operación de segmento ge
 
 ### Dependencies
 - P5-T2 (movimiento + observación) — cerrada · P4-T5 (CargoLocation) — cerrada
-- Bloqueos OQ: 🟡 OQ-043 (sobreocupación BR-036) · 🟡 OQ-045 (percentage) · 🔴 OQ-042 (residual/camión)
+- Bloqueos OQ: ninguno — OQ-042/OQ-043/OQ-045 **resueltas v0.5** (residual derivado BR-042; sobreocupación con flag +10% solo ADMIN; `percentage` derivado)
 
 ### Files
 - `cargoops-backend/src/cargo/distribution/` (controller + service + DTOs)
@@ -271,7 +271,7 @@ Hito P5-H7 (Movements, fase 5). Satisface BR-037 (mover cantidad/porcentaje ≠ 
 
 ### Dependencies
 - P5-T6 (transacciones de segmentos) — cerrada
-- Bloqueos OQ: 🔴 OQ-042 (camión como Location o residual) · 🟡 OQ-044 (conversión de unidades)
+- Bloqueos OQ: ninguno — OQ-042/OQ-044 **resueltas v0.5** (camión no es Location, residual derivado BR-042; sin conversión, unidades compatibles o `PERCENT`)
 
 ### Files
 - `cargoops-backend/src/cargo/distribution/partial-movement.service.ts`
@@ -312,7 +312,7 @@ Hito P5-H8 (Movements, fase 5). Satisface BR-036 y MASTER-SPEC §9 (alerta CAPAC
 
 ### Dependencies
 - P4-T6 (consultas de capacidad) — cerrada · P5-T6 (segmentos) — cerrada
-- Bloqueos OQ: 🟡 OQ-041 (unidad/umbral) · 🟡 OQ-043 (sobreocupación BR-036)
+- Bloqueos OQ: ninguno — OQ-041/OQ-043 **resueltas v0.5** (defaults por LocationType BR-041; sobreocupación con flag +10% solo ADMIN)
 
 ### Files
 - `cargoops-backend/src/alerts/capacity-alert.service.ts` (detección)
@@ -352,7 +352,7 @@ Hito P4-H7 (Locations, fase 4). Consume los endpoints BR-040 de P4-T6. Component
 ### Dependencies
 - P4-T6 (consultas BR-040) — cerrada
 - P1-T4 (skeleton frontend) — cerrada
-- Bloqueo OQ: 🟡 OQ-045 (semántica de percentage en UI)
+- Bloqueo OQ: ninguno — OQ-045 **resuelta v0.5** (`quantity` fuente de verdad; `percentage` derivado de UI)
 
 ### Files
 - `cargoops-frontend/src/features/locations/distribution-panel/` (crear)
@@ -422,7 +422,7 @@ Si al desglosar o implementar una tarea se supera el límite, se divide en subta
 ## 8. Ciclo de vida de una Task (orquestación)
 
 1. **PLAN**: al abrir una fase, el orquestador genera las Tasks a partir de los hitos de `PHASES.md` (formato §6), marcando OQ de bloqueo.
-2. **QUEUE**: orden topológico dentro de la fase + ventanas W-1…W-6; las Tasks bloqueadas 🔴 van a cola «bloqueadas por OQ» (IMP-006).
+2. **QUEUE**: orden topológico dentro de la fase + ventanas W-1…W-6; si existieran Tasks bloqueadas 🔴 irían a cola «bloqueadas por OQ» (IMP-006) — sin OQ abiertas en v0.5, no aplica.
 3. **ASSIGN**: el orquestador asigna UNA Task por agente; sin solapamiento de archivos entre agentes (IMP-007).
 4. **IMPLEMENT**: el agente lee Inputs, implementa Files, escribe Tests, valida localmente.
 5. **VERIFY**: CI (lint → test → build) + revisión de Acceptance Criteria + DoD checklist (§8 de DEFINITION-OF-DONE como guía de revisión).
@@ -435,11 +435,11 @@ Si al desglosar o implementar una tarea se supera el límite, se divide en subta
 
 1. **PHASE 1 — Foundation** (abre tras el gate de FASE 0, RMP-003): P1-T1 (tooling) → P1-T2 (skeleton backend) → P1-T3 (Prisma + seed) → P1-T4 (skeleton frontend) → P1-T5 (CI + docker-compose). Ventana W-1: PHASE 2 puede iniciar tras P1-T2/P1-T3.
 2. **PHASE 2 — Auth + RBAC**: P2-T1 (auth) → P2-T2 (roles/permisos seed) → P2-T3 (guards) → P2-T4 (frontend auth) → P2-T5 (auditoría + seguridad base). No se solapa con PHASE 3 (W no: regla dura RBAC antes de operaciones).
-3. **PHASE 3 ∥ PHASE 4**: paralelas (W-2). P3: P3-T1 → P3-T2 (alta, 🔴 OQ-001) → P3-T3 → P3-T4 → P3-T5 (trucks, 🟡 OQ-003) → P3-T6. P4: P4-T1 → P4-T2 (capacidad por unidad, 🔴 OQ-009/OQ-041) → P4-T3 → P4-T4 (seed + UI) → P4-T5 (entidad CargoLocation + seed distribución §5, 🟡 OQ-045) → P4-T6 (consultas BR-040) → P4-T7 (DistributionPanel/LocationOccupancyCard).
-4. **PHASE 5 — Movements**: P5-T1 (máquina de estados) → P5-T2 (movimiento básico) → P5-T3 (validaciones BR-004/005/035) → P5-T4 (UI parcial) → P5-T5 (reversión) → P5-T6 (transacciones de segmentos, 🟡 OQ-043/OQ-045) → P5-T7 (movimientos parciales y descarga parcial, 🔴 OQ-042 · 🟡 OQ-044) → P5-T8 (alerta de capacidad, 🟡 OQ-041/OQ-043). Confirma la base de 6/7/8 (W-3).
-5. **PHASE 6 ∥ 7 ∥ 8** (W-3/W-4 intercalados): P6-T1→T5 (mapa lectura, 🟡 OQ-015), P7-T1→T3 (dashboard, 🔴 OQ-009), P8-T1→T3 (historial/auditoría).
-6. **PHASE 9 — Alerts**: P9-T1→T4 (job de alertas 🔴 OQ-008; notificaciones in-app; flujo humano a Rezago).
-7. **PHASE 10 ∥ 11** (W-5): P10-T1→T3 (PDF, 🟡 OQ-005) y P11-T1→T4 (editor de planos, 🟡 OQ-015).
+3. **PHASE 3 ∥ PHASE 4**: paralelas (W-2). Ninguna Task tiene bloqueo por OQ (v0.5). P3: P3-T1 → P3-T2 (alta, OQ-001 resuelta → BR-002) → P3-T3 → P3-T4 → P3-T5 (trucks, OQ-003 resuelta) → P3-T6. P4: P4-T1 → P4-T2 (capacidad por unidad, OQ-009/OQ-041 resueltas → BR-041) → P4-T3 → P4-T4 (seed + UI) → P4-T5 (entidad CargoLocation + seed distribución §5, OQ-045 resuelta) → P4-T6 (consultas BR-040) → P4-T7 (DistributionPanel/LocationOccupancyCard).
+4. **PHASE 5 — Movements**: P5-T1 (máquina de estados) → P5-T2 (movimiento básico) → P5-T3 (validaciones BR-004/005/035) → P5-T4 (UI parcial) → P5-T5 (reversión) → P5-T6 (transacciones de segmentos, OQ-043/OQ-045 resueltas) → P5-T7 (movimientos parciales y descarga parcial, OQ-042/OQ-044 resueltas → BR-042) → P5-T8 (alerta de capacidad, OQ-041/OQ-043 resueltas). Confirma la base de 6/7/8 (W-3).
+5. **PHASE 6 ∥ 7 ∥ 8** (W-3/W-4 intercalados): P6-T1→T5 (mapa lectura, OQ-015 resuelta: estático), P7-T1→T3 (dashboard, OQ-009 resuelta), P8-T1→T3 (historial/auditoría).
+6. **PHASE 9 — Alerts**: P9-T1→T4 (job de alertas, OQ-008 resuelta: días corridos 30/40; notificaciones in-app; flujo humano a Rezago).
+7. **PHASE 10 ∥ 11** (W-5): P10-T1→T3 (PDF, OQ-005 resuelta: Puppeteer) y P11-T1→T4 (editor de planos, OQ-015 resuelta: **fuera de v1** → la fase se difiere).
 8. **PHASE 12 — QA** (oleadas W-6: QA de 2..6 durante 7..11, QA final en 12): P12-T1→T3.
 9. **PHASE 13 — Production** (regla dura 12→13): P13-T1→T4.
 10. **PHASE 14 — Mobile** (futuro, RMP-007): P14-T1→T3.
@@ -452,34 +452,36 @@ Base/entidad → validaciones de dominio → contrato API → tests → UI consu
 
 P0: fases 1–5 (operación crítica). P1: fases 6–8. P2: fases 9–11. P3: 12–13 (endurecimiento). P4: 14 (futuro). Escala RMP-002.
 
-## 10. Bloqueos por OQ (impacto en Tasks)
+## 10. Estado de las OQ (impacto en Tasks)
 
-| OQ | Fases afectadas | Tasks típicas afectadas | Acción |
+> `docs/OPEN-QUESTIONS.md` v0.5 consolida **sin OQ abiertas**: todas las decisiones de negocio/técnicas están tomadas. Ninguna Task queda bloqueada por OQ. Esta tabla se conserva como **traza de qué OQ condicionaba cada Task** y qué regla canónica la sustituye.
+
+| OQ | Fases afectadas | Tasks típicas afectadas | Estado / Acción |
 | --- | --- | --- | --- |
-| OQ-001 (unicidad de código) | 3 | P3-T2 (alta de carga) | 🔴 bloquear tarea hasta resolver |
-| OQ-002 (carga parcial) | 3, 5 | ~~P3-H2, P5-H2, P5-H4~~ | ✅ **Resuelta (v0.2)**: distribución vía CargoLocation (BR-032..040); sin CargoItem en v1 — revisar al resolver OQ-044/045 (PHS-D2) |
-| OQ-003 (camión↔carga) | 3, 5 | P3-T5, P5-T2 (asignación) | 🟡 ejecutar con supuesto documentado |
-| OQ-004 (egreso/retiro) | 3, 5 | P5-H5 (posible hito EXIT, PHS-D3) | 🔴 bloquea fin de vida; usar supuesto «sin egreso en v1» para el resto |
-| OQ-005 (estrategia PDF) | 10 | P10-T1 | 🟡 |
-| OQ-007 (Redis/BullMQ v1) | 9, 13 | P9-T1 (job), P13-T2 | 🟡 |
-| OQ-008 (días/fecha base alerta) | 9 | P9-T1 | 🔴 |
-| OQ-009 (ocupación derivada `occupiedCapacity`) | 4, 7 | P4-T2, P7-T1 | 🔴 (residual: OQ-041 — unidad por defecto) |
-| OQ-010 (SSR/PWA v1) | 1, 14 | P1-T4, P14-T1 | 🟡 |
-| OQ-011 (canales notificación) | 9 | P9-T3 | 🟢 |
-| OQ-014 (capacidad galpón/plazoleta) | 4, 7 | P4-T2, P7-T1 | 🟡 |
-| OQ-015 (editor planos en v1) | 6, 11 | P6-T2, P11-T1 (RMP-D4: posible fusión 6+11) | 🟡 |
-| OQ-041 (unidad por defecto por LocationType) | 4, 5, 7, 9 | P4-T2, P5-T3, P5-T8, P7-T1 | 🔴 (fase 5) / 🟡 (fases 4, 7, 9): condiciona capacidad, movimientos y umbrales |
-| OQ-042 (camión como Location o residual) | 5 | P5-T7 (descarga parcial), P4-T5 (seed) | 🔴 ejecutar descarga parcial con supuesto documentado (§67) |
-| OQ-043 (sobreocupación BR-036) | 4, 5 | P4-T2, P5-T3, P5-T6, P5-T8 | 🟡 flag `allowOverOccupation` + límite % + rol autorizante |
-| OQ-044 (conversión de unidades) | 5 | P5-T7 | 🟡 exigir unidades compatibles o PERCENT; sin conversión en v1 (recomendado) |
-| OQ-045 (semántica de percentage) | 4, 5 | P4-T5, P4-T6, P5-T6, P5-T7 | 🟡 almacenado vs derivado de UI |
+| OQ-001 (unicidad de código) | 3 | P3-T2 (alta de carga) | ✅ Resuelta (v0.5) — sin bloqueo: BR-002 (`^[A-Z0-9][A-Z0-9./-]{2,31}$`, único case-insensitive) |
+| OQ-002 (carga parcial) | 3, 5 | ~~P3-H2, P5-H2, P5-H4~~ | ✅ **Resuelta (v0.2)**: distribución vía CargoLocation (BR-032..040); sin CargoItem en v1 (OQ-044/045 ya resueltas — PHS-D2) |
+| OQ-003 (camión↔carga) | 3, 5 | P3-T5, P5-T2 (asignación) | ✅ Resuelta (v0.5) — sin bloqueo: una carga ↔ un camión a la vez (`truckId`); N cargas por camión |
+| OQ-004 (egreso/retiro) | 3, 5 | P5-H5 (hito EXIT, PHS-D3) | ✅ Resuelta (v0.5) — sin bloqueo: movimiento `EXIT` con observación obligatoria, `EXITED` terminal (BR-043) |
+| OQ-005 (estrategia PDF) | 10 | P10-T1 | ✅ Resuelta (v0.5) — sin bloqueo: HTML→PDF con Chromium/Puppeteer en servicio backend (ADR-013) |
+| OQ-007 (Redis/BullMQ v1) | 9, 13 | P9-T1 (job), P13-T2 | ✅ Resuelta (v0.5) — sin bloqueo: Redis + BullMQ sí en v1 (ADR-012) |
+| OQ-008 (días/fecha base alerta) | 9 | P9-T1 | ✅ Resuelta (v0.5) — sin bloqueo: días corridos desde `entryDate`, alerta día 30 y segunda día 40 (BR-014/015) |
+| OQ-009 (ocupación derivada `occupiedCapacity`) | 4, 7 | P4-T2, P7-T1 | ✅ Resuelta (v0.5) — sin bloqueo: pendiente OQ-041 cerrado (BR-041), umbrales 70/90 (OQ-046) |
+| OQ-010 (SSR/PWA v1) | 1, 14 | P1-T4, P14-T1 | ✅ Resuelta (v0.5) — sin bloqueo: PWA mínima en v1, SSR diferido a v1.1 |
+| OQ-011 (canales notificación) | 9 | P9-T3 | ✅ Resuelta (v0.5) — sin bloqueo: solo in-app en v1 (BR-019 deja EMAIL/PUSH para v1.1) |
+| OQ-014 (capacidad galpón/plazoleta) | 4, 7 | P4-T2, P7-T1 | ✅ Resuelta (v0.5) — sin bloqueo: Sector/Galpón en AREA, Plazoleta en UNITS |
+| OQ-015 (editor planos en v1) | 6, 11 | P6-T2, P11-T1 (RMP-D4) | ✅ Resuelta (v0.5) — sin bloqueo: mapa estático; editor fuera de v1 (RMP-D4: no hay fusión 6+11) |
+| OQ-041 (unidad por defecto por LocationType) | 4, 5, 7, 9 | P4-T2, P5-T3, P5-T8, P7-T1 | ✅ Resuelta (v0.5) — sin bloqueo: defaults por tipo (BR-041) con override por ubicación |
+| OQ-042 (camión como Location o residual) | 5 | P5-T7 (descarga parcial), P4-T5 (seed) | ✅ Resuelta (v0.5) — sin bloqueo: el camión NO es Location; residual = `totalQuantity − Σ segmentos` (BR-042) |
+| OQ-043 (sobreocupación BR-036) | 4, 5 | P4-T2, P5-T3, P5-T6, P5-T8 | ✅ Resuelta (v0.5) — sin bloqueo: flag `allowOverOccupation`, default +10%, habilitación solo ADMIN |
+| OQ-044 (conversión de unidades) | 5 | P5-T7 | ✅ Resuelta (v0.5) — sin bloqueo: sin conversión en v1; unidades compatibles o `PERCENT` |
+| OQ-045 (semántica de percentage) | 4, 5 | P4-T5, P4-T6, P5-T6, P5-T7 | ✅ Resuelta (v0.5) — sin bloqueo: `quantity` es la fuente de verdad; `percentage` derivado de UI |
 
 ## 11. Criterios de aceptación de este plan
 
 - [ ] Al abrir una fase, de cada hito de `PHASES.md` se derivan Tasks con el formato de §6 completo (IMP-003).
 - [ ] Ninguna Task del repositorio supera los límites de §7 (IMP-004).
 - [ ] El orden de ejecución respeta el topológico de §9.1 y las ventanas W-1…W-6 de ROADMAP.
-- [ ] Las Tasks bloqueadas por OQ quedan identificadas con su ID (🔴/🟡) y no se planifican para ejecución (IMP-006).
+- [ ] Las Tasks bloqueadas por OQ quedan identificadas con su ID (🔴/🟡) y no se planifican para ejecución (IMP-006) — **no aplica en v0.5** (sin OQ abiertas).
 - [ ] Toda Task cerrada tiene CI verde + DoD §7 marcada + Acceptance Criteria verificados (IMP-008).
 - [ ] Referencias EPIC/FEATURE/US coherentes con el backlog de W1 (`PRODUCT-BACKLOG.md`, PB-D1) y revisadas al alinear `PHASES.md` (IMP-D1 / PBQ-01).
 
@@ -493,7 +495,7 @@ P0: fases 1–5 (operación crítica). P1: fases 6–8. P2: fases 9–11. P3: 12
 | `docs/DEFINITION-OF-DONE.md` | DoD por tarea (§7), funcionalidad (§6), fase (§4), release (§5) |
 | `docs/STANDARDS.md` | Estándares que las Tasks deben cumplir |
 | `docs/product/PRD.md` · `docs/product/PRODUCT-BACKLOG.md` (W1, PB-D1) | Trazabilidad EPIC/FEATURE/US |
-| `docs/OPEN-QUESTIONS.md` | OQ-001…045 (bloqueos de Task) |
+| `docs/OPEN-QUESTIONS.md` | OQ-001…047 (bloqueos de Task) — **v0.5: sin OQ abiertas** |
 | Repos futuros (§22) | Destino de las Tasks al implementar |
 
 ## 13. Riesgos
@@ -501,7 +503,7 @@ P0: fases 1–5 (operación crítica). P1: fases 6–8. P2: fases 9–11. P3: 12
 | # | Riesgo | Impacto | Mitigación |
 | --- | --- | --- | --- |
 | IMP-R1 | Desalineación de numeración: backlog W1 secuencial (PB-D1) vs `PHASES.md` phase-prefixed (PHS-D1) | Trazabilidad mixta entre tareas y requisitos hasta alinear | Usar P<N>-T<k> como ID primario; el orquestador alinea `PHASES.md` al backlog antes de abrir fase 3 (IMP-D1) |
-| IMP-R2 | OQ-001/004 y OQ-041/042 abiertas al llegar a fases 3/5 | Parálisis de las tareas centrales | RMP-004 (tareas no bloqueadas avanzan); resolver antes del fin de fase 2 (RSK-001) |
+| IMP-R2 | ~~OQ-001/004 y OQ-041/042 abiertas al llegar a fases 3/5~~ → **cerrado en v0.5** (BR-002/043/041/042): la parálisis de tareas centrales ya no aplica | — | Ninguna: el dominio canónico está fijado; si se reabre una OQ, aplica RMP-004 |
 | IMP-R3 | Numeración no alineada entre `PHASES.md` (W10) y el backlog W1 (PB-D1) | Referencias cruzadas rotas en la implementación | Decisión IMP-001 + orquestador alinea `PHASES.md` antes de abrir fase 3 (IMP-D1 / PBQ-01) |
 | IMP-R4 | Tasks que tocan UI+API+jobs a la vez | Diffs gigantes, revisión lenta | Regla §7.2 + serialización por módulo (IMP-007) |
 | IMP-R5 | Agent amplía alcance («de paso arreglo…») | Scope creep no planificado | Files de alcance cerrado (§6 campo 5) + revisión de diff en VERIFY |
