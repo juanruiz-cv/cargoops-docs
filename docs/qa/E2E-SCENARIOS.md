@@ -278,13 +278,16 @@ La suite E2E es la capa superior de la pirámide del `QA-STRATEGY.md` §1 (5% de
 4. Reintentar la distribución de 30 m² con observación (solo ADMIN habilita; la distribución la ejecuta un OPERATOR autorizado).
 5. Verificar la aceptación y la auditoría.
 6. Deshabilitar el flag y verificar que el intento vuelve a rechazarse.
+7. Con el flag habilitado, intentar un delta que exceda el techo (+10%):Sector 4 con `capacity` 100 m² → techo **110 m²** → 30 m² adicionales (110 → 140) se rechazan.
 
 **Asserts**
-1. Paso 2: `409 CAPACITY_EXCEEDED` (BR-036); sin CargoLocation; Sector 4 sigue en 80 m².
+1. Paso 2: `409 CAPACITY_EXCEEDED` con `details.rule: 'BR-005'` (BR-005: flag off → techo = capacidad declarada); sin CargoLocation; Sector 4 sigue en 80 m².
 2. Paso 3: `PATCH /locations/:id` responde `2xx`; el flag persiste; se registra auditoría (CAPACITY_CHANGE — BR-036/BR-013).
-3. Pasos 4-5: `201` con observación; `occupiedCapacity` 110 m²; la acción de sobreocupación queda auditada (BR-036).
+3. Pasos 4-5: `201` con observación; `occupiedCapacity` 110 m² (80 + 30), que **iguala** el techo por defecto y por eso se acepta; la acción de sobreocupación queda auditada como `CAPACITY_CHANGE` **sobre la ubicación** (entidad `location`, no la carga) con `metadata.overOccupation: true` (BR-036).
 4. Paso 6: nuevamente `409 CAPACITY_EXCEEDED`: la sobreocupación requiere la acción administrativa explícita y no persiste sin el flag (política: flag persistente por ubicación — OQ-043 → BR-036 ampliada).
-5. Rol habilitante: **solo ADMIN**; límite default **+10%**; observación obligatoria (OQ-043 → BR-036 ampliada resuelta).
+5. Paso 7: `409 CAPACITY_EXCEEDED` con `details.rule: 'BR-036'`, `details.overOccupation: true` y `details.ceiling: 110` — el rechazo reporta el **techo real**, no la capacidad declarada; `details.capacity` sigue siendo 100 (el dato del registro).
+6. Rol habilitante: **solo ADMIN**; límite default **+10%**; observación obligatoria (OQ-043 → BR-036 ampliada resuelta).
+7. Alcance: la misma verificación de techo aplica a **todos** los caminos de escritura de segmentos, incluida el **alta directa a sector** (`POST /cargos` con `locationId`) — aceptada por debajo del techo y auditada igual al superarlo (BR-036; API.md §5.2).
 
 ---
 
