@@ -175,7 +175,7 @@ Descomponer cada fase del roadmap en hitos y tareas de alto nivel, con repos/arc
 - **Notas técnicas**: PDF siempre generado en backend (nunca en cliente) — no lógica crítica en UI. Envelope de error según §10.
 - **Bloqueos**: ninguno (OQ-005 **resuelta v0.5**: HTML→PDF con Chromium/Puppeteer).
 
-## 15. PHASE 11 — Map Editor (EPIC-012)
+## 15. PHASE 11 — Map Editor (EPIC-012/013)
 
 | Hito | Tareas | Descripción | Criterios de aceptación del hito |
 | --- | --- | --- | --- |
