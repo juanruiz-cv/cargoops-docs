@@ -78,15 +78,22 @@ En NestJS los DTOs son clases con decoradores de class-validator, transformadas 
 | code | string | `@IsString()` `@IsNotEmpty()` `@MaxLength(64)` (BR-001: código obligatorio; BR-002 unicidad en service/DB) | "El código de carga es obligatorio" |
 | name | string | `@IsOptional()` `@IsString()` `@MaxLength(200)` | — |
 | description | string | `@IsOptional()` `@IsString()` `@MaxLength(1000)` | — |
-| totalQuantity | number | `@IsOptional()` `@IsNumber()` `@Min(0.0001)` (total de la carga; base de validación de la distribución — BR-034). **Opcional en el ALTA pero requerido condicional (BR-042)**: obligatorio antes de la primera distribución parcial; sin total declarado → `CARGO_TOTAL_REQUIRED` 422 en el movimiento/segmento | "La cantidad total debe ser mayor a cero" |
-| totalUnit | string | `@IsOptional()` `@IsEnum(QuantityUnit)` (UNITS/PALLETS/TONS/CUBIC_METERS/AREA; si viene totalQuantity, totalUnit es requerido; **ambos se exigen juntos** — BR-042; `totalUnit` define la unidad del residual derivado `inTruckUnit`) | "La unidad de la cantidad total es inválida" |
-| truckId | string UUID | `@IsOptional()` `@IsUUID('4')` | — |
+| totalQuantity | number | `@IsOptional()` `@IsNumber()` `@Min(0.0001)` (total de la carga; base de validación de la distribución — BR-034). **Opcional en el ALTA pero requerido condicional (BR-042)**: obligatorio antes de la primera distribución parcial y **obligatorio sin excepción en el alta directa** (`locationId`, porque es la cantidad del segmento inicial); sin total declarado → `CARGO_TOTAL_REQUIRED` 422 en el movimiento/segmento o en el alta directa | "La cantidad total debe ser mayor a cero" |
+| totalUnit | string | `@IsOptional()` `@IsEnum(QuantityUnit)` (UNITS/PALLETS/TONS/CUBIC_METERS/AREA; si viene totalQuantity, totalUnit es requerido; **ambos se exigen juntos** — BR-042, y ambos son **obligatorios** con `locationId`; `totalUnit` define la unidad del residual derivado `inTruckUnit`) | "La unidad de la cantidad total es inválida" |
+| truckId | string UUID | `@IsOptional()` `@IsUUID()` | — |
+| locationId | string UUID | `@IsOptional()` `@IsUUID()` — **ALTA DIRECTA A SECTOR** (FASE 5): la carga nace `STORED` con un único segmento `CargoLocation` ACTIVE y **sin** fila `Movement`; excluye `truckId` y vuelve obligatorios `totalQuantity`/`totalUnit` (BR-042). Contrato de errores: API.md §5.2 | — |
 | entryDate | string (ISO 8601) | `@IsOptional()` `@IsISO8601()` | "La fecha de ingreso debe ser ISO 8601" |
 | metadata | object | `@IsOptional()` `@IsObject()` (JSONB) | — |
+| observation | string | `@IsOptional()` `@IsString()` `@MaxLength(2000)` — **obligatoria en el service** (BR-006/OQ-022, decisión 24): declarada opcional para que el `ValidationPipe` no responda 400 antes de que el service pueda responder 422 `BUSINESS_RULE_VIOLATION` (`details.rule: 'BR-006'`, decisión 31) | — |
 
-Nota: **NO existe `locationId` único en el alta** (secciones 62-70, BR-032): la relación Cargo↔Location es M:N vía `CargoLocation`; la ubicación inicial se asigna con `POST /cargos/:id/locations` (§4.4.1). `quantity`/`unit` se renombran a `totalQuantity`/`totalUnit` (MASTER-SPEC §4.1). **ID-003 (resuelta, 2026-09-23)**: `DATABASE.md` §5.3 alineado en FASE 0 (sin `location_id` en `cargo`; `CargoLocation` modelado con `quantity`/`quantity_unit`) — consistente con estos DTOs y marcada como ✅ en `OPEN-QUESTIONS.md`. Los DTOs siguen MASTER-SPEC v0.3.
+Nota: **la relación Cargo↔Location es M:N vía `CargoLocation`** (secciones 62-70, BR-032): **no existe `location_id` en `cargo`** ni un `locationId` único en la respuesta. El alta **sí** admite `locationId` **opcional** como **ALTA DIRECTA A SECTOR** (FASE 5; transición `REGISTERED → STORED` confirmada — VALIDATION.md §4.4.1 "alta directa con `locationId` de depósito | alta (sin movimiento)"): la carga se persiste `STORED` junto al segmento inicial ACTIVE, en la misma transacción y **sin** fila `Movement` — el estado inicial es parte de la fila `Cargo`, no una transición, y BR-008 (historial reconstruible) queda intacto. Sin `locationId`, la ubicación inicial (o cualquier otra) se asigna con `POST /cargos/:id/locations` (§4.4.1). `quantity`/`unit` se renombran a `totalQuantity`/`totalUnit` (MASTER-SPEC §4.1). **ID-003 (resuelta, 2026-09-23)**: `DATABASE.md` §5.3 alineado en FASE 0 (sin `location_id` en `cargo`; `CargoLocation` modelado con `quantity`/`quantity_unit`) — la alineación sigue vigente: el alta directa **no** agrega columna a `cargo`. Los DTOs siguen MASTER-SPEC v0.3.
 
-Nota: el estado inicial lo fija el service (`REGISTERED`; si viene con `truckId` y sin segmentos de ubicación → `IN_TRUCK`), NO el DTO (BR-016: el cliente no elige estados arbitrarios).
+Reglas del `locationId` de alta (validadas por el service, no por el DTO):
+- **Excluyente con `truckId`**: un ingreso es directo a sector (`STORED`) o vía camión (`IN_TRUCK`); enviar ambos → 422 `BUSINESS_RULE_VIOLATION` con `details.exclusiveFields: ['locationId','truckId']`. El camión no es una `Location` (BR-042) y `STORED` no admite camión en la matriz BR-044.
+- **`totalQuantity`/`totalUnit` obligatorios** (BR-042): son la cantidad del segmento inicial (`cargo_locations.quantity` es NOT NULL); si faltan → 422 `CARGO_TOTAL_REQUIRED` (`details.rule: 'BR-042'`). Enviar solo uno de los dos sigue siendo 400 `VALIDATION_ERROR` (payload shape).
+- **Ubicación de depósito y su capacidad**: debe existir y no estar soft-deleted (404 `LOCATION_NOT_FOUND`), estar `ACTIVE` (409 `LOCATION_INACTIVE`, BR-004), admitir `STORED` — `GALPON`/`SECTOR` (BR-044), admitir la `totalUnit` (422 `UNIT_INCOMPATIBLE`, BR-035) y tener capacidad para el total declarado (409 `CAPACITY_EXCEEDED`, BR-005/036, techo de sobreocupación §4.5). Detalle completo en API.md §5.2.
+
+Nota: el estado inicial lo fija el service, NO el DTO (BR-016: el cliente no elige estados arbitrarios), y son **tres** derivaciones: `STORED` con `locationId` (alta directa), `IN_TRUCK` con `truckId`, `REGISTERED` en cualquier otro caso. La arista `REGISTERED → STORED` de la matriz conserva `kinds: []` a propósito: un ALTA no es un movimiento, así que `move()` sigue rechazando ese par y el intake nunca lo recorre.
 
 **UpdateCargoDto** — `PartialType(CreateCargoDto)` con excepción: `code` solo editable bajo reglas de unicidad (BR-002) y con observación/auditoría; **`totalQuantity`/`totalUnit` SÍ se editan por PATCH** (declaración del total — BR-042; ambos juntos; nuevo total < suma distribuida vigente → 409 `DISTRIBUTION_EXCEEDS_TOTAL`), pero `truckId` y los campos que **implican movimiento o distribución** deben usar el flujo de movimientos (`MoveCargoDto`) o de segmentos (§4.4.1). Documentado como regla del service (ver VALIDATION.md §5 y API.md §5.4).
 
@@ -257,12 +264,26 @@ Los shapes de salida se tipan con interfaces/classes `@ApiProperty` reutilizadas
 
 ```jsonc
 // POST /api/v1/cargos
-// Request — sin locationId único (BR-032): la ubicación inicial se asigna vía POST /cargos/:id/locations (§4.4.1)
-{ "code": "029TERRA26", "name": "Terrazzo 26 — Lote A", "totalQuantity": 120, "totalUnit": "PALLETS", "entryDate": "2026-09-20T10:00:00Z" }
+// Request — alta simple (sin ubicación inicial): la ubicación se asigna vía POST /cargos/:id/locations (§4.4.1)
+{ "code": "029TERRA26", "name": "Terrazzo 26 — Lote A", "totalQuantity": 120, "totalUnit": "PALLETS",
+  "entryDate": "2026-09-20T10:00:00Z", "observation": "Alta en oficina; pendiente de ubicación." }
 
 // 201 Created
 { "data": {
     "id": "7c0f3a4e-...uuid", "code": "029TERRA26", "status": "REGISTERED",
+    "entryDate": "2026-09-20T10:00:00Z",
+    "totalQuantity": 120, "totalUnit": "PALLETS", "createdAt": "2026-09-23T09:15:00Z" } }
+
+// POST /api/v1/cargos — ALTA DIRECTA A SECTOR (FASE 5): con `locationId` la carga nace STORED
+// con un único segmento ACTIVE y SIN movimiento; `totalQuantity`/`totalUnit` son obligatorios y
+// `truckId` está excluido (BR-042, BR-044)
+{ "code": "029TERRA26", "name": "Terrazzo 26 — Lote A", "totalQuantity": 120, "totalUnit": "PALLETS",
+  "locationId": "b2d1...uuid", "observation": "Ingreso directo a Sector 4 por muelle 3." }
+
+// 201 Created — la respuesta NO lleva la ubicación (BR-032: la distribución es M:N); el segmento
+// inicial se lee en GET /cargos/:id/locations (§4.4.1)
+{ "data": {
+    "id": "7c0f3a4e-...uuid", "code": "029TERRA26", "status": "STORED",
     "entryDate": "2026-09-20T10:00:00Z",
     "totalQuantity": 120, "totalUnit": "PALLETS", "createdAt": "2026-09-23T09:15:00Z" } }
 ```

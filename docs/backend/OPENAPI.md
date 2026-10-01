@@ -160,6 +160,7 @@ Reglas:
 - `minimum`, `maximum`, `minLength` y `maxLength` provienen de los decoradores de `class-validator` de `DTOs.md` §4 y se replican en `@ApiProperty`; no se endurecen ni se relajan respecto del DTO.
 - La observación obligatoria se documenta con `minLength: 1` en `MoveCargoDto.observation`, `CreateDistributionDto.notes` y `DeleteDistributionDto.notes`, más un `description` que cita BR-006/BR-039 (BR-007 aplica al cambio de estado).
 - `totalQuantity` y `totalUnit` se documentan como opcionales en `CreateCargoDto` con la nota de requisito condicional BR-042: obligatorios antes de la primera distribución parcial, y `422 CARGO_TOTAL_REQUIRED` si se intenta sin ellos (API.md §5.2, VALIDATION §4.3.1).
+- `CreateCargoDto.locationId` se documenta como **opcional** con la regla de exclusividad en el `description` del schema (mismo criterio que el par `quantity`/`quantityUnit`: OpenAPI 3.1 no expresa condicionales entre propiedades sin `oneOf`): **excluye `truckId`** (alta directa a sector o ingreso vía camión, nunca ambos) y vuelve `totalQuantity`/`totalUnit` **obligatorios** — la carga nace `STORED` con un único segmento ACTIVE y sin movimiento. El schema `CargoResponse` **no** declara `locationId` (BR-032, M:N), por lo que el campo es **solo de entrada** (API.md §5.2, VALIDATION §4.4.1).
 - El par `quantity`/`quantityUnit` se documenta con la regla de co-ocurrencia y compatibilidad: misma unidad base o `PERCENT`, sin conversión en v1 (BR-035, OQ-044 → BR-048). La dependencia entre campos se expresa en el `description` del schema (**decisión del estándar**: OpenAPI 3.1 no expresa condicionales entre propiedades sin `oneOf`, y un `oneOf` para este par agregaría ambigüedad al cliente sin ganar precisión).
 - `percentage` se documenta con `minimum`/`maximum` y la aclaración de que es derivado salvo `PERCENT` (BR-049, OQ-045).
 - Los códigos de carga se documentan con el `pattern` canónico `^[A-Z0-9][A-Z0-9./-]{2,31}$` y la normalización a mayúsculas en backend (BR-002, OQ-001), coherente con `CargoCodeValidator` (VALIDATION §4.3).
@@ -173,6 +174,7 @@ Cada dominio tiene un endpoint de referencia cuyo fragmento de OpenAPI sirve de 
 | --- | --- | --- | --- |
 | Auth | `POST /auth/login` | `LoginDto`, `AuthResponse`, `UserSummary` | Refresh en cookie httpOnly; `roles`/`permissions` son snapshot del token (API.md §4.1) |
 | Cargas | `GET /cargos` | `ListQuery`, `PaginatedResponse<CargoResponse>`, `CargoListQuery` | Residual `inTruckAmount`/`inTruckUnit` derivado (BR-042); `openAlerts` |
+| Alta directa a sector | `POST /cargos` | `CreateCargoDto` (con `locationId` opcional), `CargoResponse` | Alta directa: `STORED` + un segmento ACTIVE sin movimiento; `locationId` excluye `truckId` y exige total (BR-042/044) |
 | Ubicaciones | `GET /locations` | `LocationQuery`, `PaginatedResponse<LocationResponse>` | `capacityUnit` es la unidad efectiva (BR-041); ocupación derivada (BR-033) |
 | CargoLocation | `POST /cargos/{id}/locations` | `CreateDistributionDto`, `DistributionSegment` | Un segmento `ACTIVE` por par carga/ubicación (BR-032); observación obligatoria (BR-006/039) |
 | Movimientos parciales | `POST /cargos/{id}/movements` | `MoveCargoDto`, `MovementResponse` | Parcial vs 100 % (BR-037); `CARGO_TOTAL_REQUIRED` (BR-042) |
@@ -289,7 +291,7 @@ Ejemplo de error de negocio en el documento, reutilizado en todos los endpoints 
 
 ### 5.11 Relaciones N:N, capacidades y unidades
 
-- El documento refleja la distribución M:N tal como está modelada: `CargoResponse` **no** declara `locationId` único, y los segmentos se exponen en `GET /cargos/{id}/locations` como `PaginatedResponse<DistributionSegment>` (BR-032, MASTER-SPEC §4.2).
+- El documento refleja la distribución M:N tal como está modelada: `CargoResponse` **no** declara `locationId` único — el alta directa a sector acepta `locationId` **en el request** de `POST /cargos` (FASE 5) y persiste la distribución como segmento `CargoLocation`, igual que el resto del modelo — y los segmentos se exponen en `GET /cargos/{id}/locations` como `PaginatedResponse<DistributionSegment>` (BR-032, MASTER-SPEC §4.2, API.md §5.2).
 - `DistributionSegment` declara `status` con el enum `CargoLocationStatus` (`ACTIVE`, `EXITED`), `enteredAt` y `exitedAt` (`nullable: true`), y documenta que el segmento egresado permanece como histórico (BR-040).
 - El residual "en camión" se documenta en `CargoResponse` como `inTruckAmount`/`inTruckUnit`, `nullable: true`, con la fórmula en la descripción y la aclaración de que `null` significa "sin total declarado" y no cero (API.md §5.1, BR-042).
 - `LocationCapacity` expone `capacity`, `capacityUnit`, `occupiedCapacity`, `availableCapacity`, `occupancyPercent`, `allowOverOccupation` y `segmentsByUnit[]`; los tres primeros derivados se marcan como tales y `segmentsByUnit` se describe como el desglose que impide sumar unidades incompatibles (BR-033/BR-035, API.md §6.5).
