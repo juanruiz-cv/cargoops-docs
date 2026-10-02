@@ -372,7 +372,7 @@ Capacidad, ocupación y disponibilidad de la ubicación (BR-033/040; secciones 6
 
 ### 9.6 Health
 - `GET /health` (liveness) → 200 `{ "data": { "status": "ok", "uptime": 3600, "timestamp": "2026-09-23T10:00:00Z" } }`; sin auth.
-- `GET /health/ready` (readiness) → 200 `{ "data": { "status": "ok", "checks": { "database": "up", "redis": "up" } } }` o 503 `{ "error": { "code": "SERVICE_UNAVAILABLE", "message": "Dependencias no disponibles", "details": { "database": "down" }, "requestId": "..." } }`.
+- `GET /health/ready` (readiness) → 200 `{ "data": { "status": "ok", "checks": { "database": "up" }, "timestamp": "2026-09-23T10:00:00Z" } }` o 503 `{ "error": { "code": "SERVICE_UNAVAILABLE", "message": "Dependencias no disponibles", "details": { "database": "down" }, "requestId": "..." } }`.
 
 ---
 
