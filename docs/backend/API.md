@@ -374,6 +374,8 @@ Capacidad, ocupación y disponibilidad de la ubicación (BR-033/040; secciones 6
 - `GET /health` (liveness) → 200 `{ "data": { "status": "ok", "uptime": 3600, "timestamp": "2026-09-23T10:00:00Z" } }`; sin auth.
 - `GET /health/ready` (readiness) → 200 `{ "data": { "status": "ok", "checks": { "database": "up" }, "timestamp": "2026-09-23T10:00:00Z" } }` o 503 `{ "error": { "code": "SERVICE_UNAVAILABLE", "message": "Dependencias no disponibles", "details": { "database": "down" }, "requestId": "..." } }`.
 
+Nota — la sonda de readiness tiene un **presupuesto de 2 s**. Una base que deja de responder *sin cerrar el socket* no la cuelga: el presupuesto vence y la sonda responde 503 con el mismo envelope que una conexión rechazada. El log server-side distingue `timed out` de `failed`, porque "la base dejó de contestar" y "la base rechazó la llamada" son incidentes distintos con páginas distintas. El presupuesto acota la **respuesta**, no la statement: la consulta sigue hasta que el pool la recicla, porque cancelarla exigiría una transacción interactiva y no aportaría nada. Liveness no tiene presupuesto porque no consulta ninguna dependencia; por eso una caída de la base degrada readiness y jamás debería provocar un reinicio.
+
 ---
 
 ## 10. Criterios de aceptación
