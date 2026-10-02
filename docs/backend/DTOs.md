@@ -163,7 +163,7 @@ Unicidad de patente: constraint DB + traducción P2002 → 409 (ver ERROR-HANDLI
 | Campo | Tipo | Validación |
 | --- | --- | --- |
 | name | string | `@IsString()` `@IsNotEmpty()` `@MaxLength(120)` |
-| code | string | `@IsString()` `@IsNotEmpty()` `@MaxLength(30)` (único, BR análogo a BR-002) |
+| code | string | `@IsString()` `@IsNotEmpty()` `@MaxLength(50)` (único, BR análogo a BR-002; ver nota *storage-wins* debajo de la tabla) |
 | type | LocationType | `@IsEnum(LocationType)` |
 | status | LocationStatus | `@IsEnum(['ACTIVE','INACTIVE','MAINTENANCE'])` default ACTIVE |
 | capacity | number | `@IsNumber()` `@Min(0)` (tope de la ubicación; ignorado si `capacityUnit = UNLIMITED`) |
@@ -171,8 +171,10 @@ Unicidad de patente: constraint DB + traducción P2002 → 409 (ver ERROR-HANDLI
 | x, y, width, height | number | `@IsNumber()` (coordenadas/elemento visual, opcional en creación) |
 | rotation | number | `@IsOptional()` `@IsNumber()` |
 | color | string | `@IsOptional()` `@Matches(/^#[0-9A-Fa-f]{6}$/)` |
-| description | string | `@IsOptional()` `@MaxLength(500)` |
+| description | string | `@IsOptional()` `@IsString()` `@MaxLength(255)` (ver nota *storage-wins* debajo de la tabla) |
 | properties | object | `@IsOptional()` `@IsObject()` |
+
+Nota **storage-wins en `code` y `description`**: los topes de longitud siguen el **almacenamiento canónico**, no este documento. La tabla `locations` guarda `code` como `varchar(50)` y `description` como `varchar(255)` (`DATABASE.md` §5.3, reflejado en `prisma/schema.prisma`), así que los validadores implementados son `@MaxLength(50)` y `@MaxLength(255)`. Este documento pedía antes 30 y 500: aceptarlos habría pasado la validación documentada y después reventado con un `value too long` de Postgres — un 500 opaco en vez de un 400 con mensaje. El cap sobre `code` sube (30 → 50) porque la columna realmente es `varchar(50)`, y capping en 30 rechazaría códigos que el modelo canónico sí puede guardar (decisión D-51). Contrato canónico: el DTO implementado en `src/locations/dto/create-location.dto.ts`, cuyo comentario de cabecera documenta esta misma divergencia.
 
 **UpdateLocationDto** — `PartialType(CreateLocationDto)`; cambio de `status` a INACTIVE/MAINTENANCE con reglas de negocio (no vaciar ubicaciones con carga — ver VALIDATION.md §5; puede requerirse observación). Cambio de `capacityUnit` sobre una ubicación con segmentos activos compatibles queda sujeto a revalidación de BR-035.
 
