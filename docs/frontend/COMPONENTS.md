@@ -67,7 +67,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `sortChange(SortChange)`, `pageChange(number)`, `pageSizeChange(number)`, `selectionChange(string[])`, `rowActivate(Cargo)` (navega a detalle).
 - **Estados visuales**: loading (esqueleto de filas + `aria-busy`), empty (con `EmptyState`: "Sin cargas para los filtros aplicados"), error (fila de error con reintento), normal (hover en filas, selección resaltada, indicadores de orden).
 - **Accesibilidad**: `<table>` real con `caption`, `th scope="col"`, botones de orden con `aria-sort`, checkboxes con label, `aria-live="polite"` en cambios de página.
-- **Reutilización**: alta. Feature dueño: `features/cargas`.
+- **Reutilización**: alta. Feature dueño: `features/cargos`.
 
 ### 6.2 CargoStatusBadge
 - **Propósito**: badge tipado por estado operativo (`CargoStatus`) con color, ícono y label i18n; comunica el estado sin depender solo del color (MASTER-SPEC §13).
@@ -75,7 +75,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: ninguno.
 - **Estados visuales**: uno por valor del enum — `REGISTERED`, `IN_TRUCK`, `PARTIALLY_UNLOADED`, `STORED`, `IN_REVIEW`, `REZAGO`, `SECUESTRO`, `IN_TRANSIT`, `EXITED`, `DELETED` (soft). Mapa color+ícono en `DESIGN-SYSTEM.md` §6.4.
 - **Accesibilidad**: color nunca es el único canal (label + ícono); sin tooltip como único medio.
-- **Reutilización**: alta. Feature dueño: `features/cargas` (exportado vía `shared/`).
+- **Reutilización**: alta. Feature dueño: `features/cargos` (exportado vía `shared/`).
 
 ### 6.3 CargoDetail
 - **Propósito**: panel de detalle de una carga: datos maestros (código, descripción, estado, camión), permanencia (`PermanenceBadge`), alertas activas, movimientos (`MovementTimeline`), **sección de distribución** (`DistributionPanel`, §6.17: segmentos por ubicación con cantidad, unidad, porcentaje, estado del segmento y fechas de ingreso/salida — BR-040) y acciones autorizadas por permiso.
@@ -83,7 +83,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `viewMovements(cargoId)`, `requestMove(cargo)`, `requestStateChange(cargo)`, `exportPdf(cargo)` (via `PdfExportButton`), `reload()`.
 - **Estados visuales**: loading (skeleton), empty (carga soft-deleted, solo lectura), error (bloque con reintento), normal; la sección de distribución declara sus propios estados loading/vacío/error (§6.17), independientes del resto del detalle.
 - **Accesibilidad**: encabezado jerárquico correcto (h2), pares label/valor con `<dl>`, acciones con labels explícitos; la sección de distribución usa una tabla semántica (§6.17).
-- **Reutilización**: media (sirve a la página detalle). Feature dueño: `features/cargas`.
+- **Reutilización**: media (sirve a la página detalle). Feature dueño: `features/cargos`.
 
 ### 6.4 CargoSearch
 - **Propósito**: búsqueda por código de carga con debounce y normalización; soporta códigos heterogéneos (`029TERRA26`, `JV028/2026CH`, `203/2017CL-LA` — BR-002/OQ-001).
@@ -91,7 +91,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `queryChange(string)` (tras debounce y normalización).
 - **Estados visuales**: default, focus (ring visible), disabled, loading (spinner inline), error de normalización con mensaje.
 - **Accesibilidad**: `<input>` con label visible, hint en `aria-describedby`, estados anunciados.
-- **Reutilización**: alta. Feature dueño: `features/cargas`.
+- **Reutilización**: alta. Feature dueño: `features/cargos`.
 
 ### 6.5 CargoFilters
 - **Propósito**: panel de filtros compuestos (estado, ubicación/área, rango de ingreso, alertas activas, permanencia) combinables con la búsqueda; los filtros activos se muestran como chips removibles y forman parte de la URL (deep-link, `ROUTING.md`).
@@ -99,7 +99,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `filtersChange(CargoFiltersState)`, `clearAll()`.
 - **Estados visuales**: collapsed/expanded; sin resultados lo indica la tabla.
 - **Accesibilidad**: `fieldset` + `legend` por grupo, controles con labels, chips removibles accesibles (botón con `aria-label`).
-- **Reutilización**: media (cargas; parcialmente alertas). Feature dueño: `features/cargas`.
+- **Reutilización**: media (cargas; parcialmente alertas). Feature dueño: `features/cargos`.
 
 ### 6.6 OperationalMap
 - **Propósito**: mapa operativo SVG del predio (ADR-006): plazoleta (zona gris), galpón con sectores 1–12 (zona amarilla) y áreas especiales (Scanner, Balanza, Rezago, Secuestro); coloreado por ocupación/estado; zoom, pan, hover, selección; panel lateral con `LocationCard`.
@@ -107,7 +107,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `locationSelect(Location)`, `viewportChange(MapViewport)`, `cargoSelect(Cargo)`.
 - **Estados visuales**: loading (skeleton del mapa), empty (plano sin elementos), error (reintento), normal; selección/hover delegados en `MapLocation`.
 - **Accesibilidad**: el mapa NO es la única vía: alternativa accesible obligatoria = listado de cargas por ubicación (`LocationCard`, §6.10; `ACCESSIBILITY.md`). Interacciones reflejadas en el listado.
-- **Reutilización**: una instancia por sesión; preview opcional en planos. Feature dueño: `features/mapa-operativo`.
+- **Reutilización**: una instancia por sesión; preview opcional en planos. Feature dueño: `features/operational-map`.
 
 ### 6.7 MapLocation
 - **Propósito**: una ubicación dentro del SVG — `LocationVisual { id, x, y, width, height, rotation, zIndex, fill, stroke, labelPosition }` (MASTER-SPEC §11.5): forma, label, estado y ocupación; maneja hover/selección.
@@ -115,7 +115,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `select(Location)`.
 - **Estados visuales**: default/hover/focus (outline), seleccionado (stroke reforzado), inactiva (patrón + opacidad + ícono, nunca solo color), sobre-capacidad (BR-005: indicador crítico; tooltip no exclusivo).
 - **Accesibilidad**: `role="group"` con label asociado; acceso completo por teclado vía listado alternativo (§6.10).
-- **Reutilización**: media. Feature dueño: `features/mapa-operativo`.
+- **Reutilización**: media. Feature dueño: `features/operational-map`.
 
 ### 6.8 MapToolbar
 - **Propósito**: acciones del mapa: zoom in/out, reset view, toggle leyenda, toggle listado accesible; en móvil, panel/drawer inferior (no clonar desktop — MASTER-SPEC §12); modo edición fuera de v1 (OQ-015 resuelta 2026-09-24: mapa = vista estática).
@@ -123,7 +123,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `zoomIn()`, `zoomOut()`, `resetView()`, `toggleLegend()`, `toggleAccessibleList()`.
 - **Estados visuales**: botones estándar del design system; tooltips no exclusivos.
 - **Accesibilidad**: íconos con `aria-label`, `aria-pressed` en toggles.
-- **Reutilización**: baja-media (mapa-operativo; planos si aplica edición). Feature dueño: `features/mapa-operativo`.
+- **Reutilización**: baja-media (mapa-operativo; planos si aplica edición). Feature dueño: `features/operational-map`.
 
 ### 6.9 MapLegend
 - **Propósito**: leyenda obligatoria del mapa (MASTER-SPEC §13): significado de colores, patrones, íconos y estados (activa/inactiva/mantenimiento; ocupación normal/alta/sobre capacidad; áreas especiales).
@@ -131,15 +131,15 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: ninguno.
 - **Estados visuales**: colapsable; ítems con muestra visual + label (nunca solo color).
 - **Accesibilidad**: lista semántica; texto legible sin zoom.
-- **Reutilización**: media. Feature dueño: `features/mapa-operativo`.
+- **Reutilización**: media. Feature dueño: `features/operational-map`.
 
 ### 6.10 LocationCard
-- **Propósito**: tarjeta de detalle de ubicación: nombre, código, tipo, capacidad (`CapacityIndicator` + `LocationOccupancyCard`), **cargas presentes como segmentos `CargoLocation` activos** (cada carga aporta cantidad + unidad a la ocupación — BR-033: una ubicación contiene N cargas) y acciones (ver en detalle `/ubicaciones/:id`, ver en mapa). Es la base de la alternativa accesible del mapa.
+- **Propósito**: tarjeta de detalle de ubicación: nombre, código, tipo, capacidad (`CapacityIndicator` + `LocationOccupancyCard`), **cargas presentes como segmentos `CargoLocation` activos** (cada carga aporta cantidad + unidad a la ocupación — BR-033: una ubicación contiene N cargas) y acciones (ver en detalle `/locations/:id`, ver en mapa). Es la base de la alternativa accesible del mapa.
 - **Inputs**: `location: Location`, `occupancy: LocationOccupancy` (del backend, `GET /locations/:id/capacity`), `segments: CargoLocation[]` (segmentos activos con la carga asociada), `isLoadingSegments: boolean`, `segmentsError?: string | null`.
-- **Outputs**: `cargoSelect(Cargo)` (derivado del segmento), `openLocation(locationId)` (navega a `/ubicaciones/:id`).
+- **Outputs**: `cargoSelect(Cargo)` (derivado del segmento), `openLocation(locationId)` (navega a `/locations/:id`).
 - **Estados visuales**: loading / empty ("Ubicación sin cargas") / error / normal; resaltada si se selecciona desde el mapa; la ocupación delega sus estados en `LocationOccupancyCard` (§6.18).
 - **Accesibilidad**: navegable por teclado sin necesidad del SVG (alternativa del mapa, §6.6); lista semántica de cargas con cantidad y unidad.
-- **Reutilización**: media. Feature dueño: `features/mapa-operativo`.
+- **Reutilización**: media. Feature dueño: `features/operational-map`.
 
 ### 6.11 MovementTimeline
 - **Propósito**: historial temporal de movimientos de una carga (BR-008, línea reconstruible): fecha es-AR, origen → destino, estado anterior → nuevo, usuario, motivo y observación (BR-006); reversiones marcadas (BR-012).
@@ -147,7 +147,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `revertRequested(Movement)` (dispara `ConfirmDialog` + `ObservationDialog`).
 - **Estados visuales**: loading (skeleton), empty ("Sin movimientos registrados"), error, normal; reversiones marcadas visual y textualmente.
 - **Accesibilidad**: `<ol>` con fechas legibles; `aria-live="polite"` al cargar.
-- **Reutilización**: alta (cargas + historial). Feature dueño: `features/cargas`.
+- **Reutilización**: alta (cargas + historial). Feature dueño: `features/cargos`.
 
 ### 6.12 CapacityIndicator
 - **Propósito**: barra de capacidad de una ubicación **unit-aware** (BR-033/035): usado vs configurado en la misma unidad compatible (m², m³, pallets, t, %, u), % ocupado y umbrales de color. Los valores provienen del backend (`GET /locations/:id/capacity`); **el cliente nunca suma unidades incompatibles** (BR-035; sin conversión en v1 — OQ-044 → BR-048 resuelta). La unidad mostrada es la **unidad efectiva** de la ubicación: `Location.capacityUnit` (override por ubicación, ADMIN) o el default por `LocationType` (BR-041).
@@ -155,7 +155,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: ninguno.
 - **Estados visuales**: normal (success), **70–90 % → warning**, **>90 % → danger** (umbrales canónicos — OQ-046 resuelta), sobre capacidad (danger: la impide el backend salvo `allowOverOccupation` administrativa — BR-036 ampliada/OQ-043 resuelta), unlimited (texto "Ilimitado" sin barra), loading (skeleton), error (ocupación no disponible, con reintento).
 - **Accesibilidad**: `role="meter"` con `aria-valuenow/min/max` y `aria-valuetext` con unidad (p. ej. "80 de 100 m²"); label textual + barra (color nunca único canal, R5 de DESIGN-SYSTEM).
-- **Reutilización**: alta. Feature dueño: `features/cargas`.
+- **Reutilización**: alta. Feature dueño: `features/cargos`.
 
 ### 6.13 AlertCard
 - **Propósito**: alerta operativa (tipo, severidad, carga asociada, permanencia, acciones según `AlertStatus`: OPEN / ACKNOWLEDGED / RESOLVED / DISMISSED — MASTER-SPEC §9): revisar, reconocer, resolver, mover a Rezago (decisión humana obligatoria, BR-014).
@@ -163,7 +163,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `acknowledge(alert)`, `resolve(alert)`, `requestMoveToRezago(alert)`, `openCargo(cargoId)`.
 - **Estados visuales**: por severidad (tokens warning/danger/info de `DESIGN-SYSTEM.md`), por estado de alerta (OPEN/ACKNOWLEDGED/DISMISSED/RESOLVED), loading/empty ("Sin alertas activas")/error.
 - **Accesibilidad**: `article` con encabezado; ancla al detalle de la carga; botones con labels.
-- **Reutilización**: alta (alertas + dashboard). Feature dueño: `features/alertas`.
+- **Reutilización**: alta (alertas + dashboard). Feature dueño: `features/alerts`.
 
 ### 6.14 ConfirmDialog
 - **Propósito**: confirmación de acciones destructivas o importantes (soft delete — BR-013, revertir — BR-012, mover, resolver alerta) con tono de riesgo y botón acorde.
@@ -195,7 +195,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: `createSegment(segmentDraft)` (crear segmento + movimiento), `adjustSegment(cargoLocationId, newQuantity)` (ajuste de cantidad/porcentaje — OQ-045), `exitSegment(cargoLocationId)` (egreso de la ubicación → movimiento), `reload()`.
 - **Estados visuales**: loading (skeleton de filas), empty (modo cargo: "Sin distribución registrada" / modo location: "Ubicación sin cargas"), error (bloque con reintento GET), normal; formulario de segmento con validación de unidad compatible con la ubicación (BR-035) y de suma ≤ total de la carga (BR-034). La fila «En camión» (residual) se muestra **solo cuando `totalQuantity` está definido y el residual > 0**; si `totalQuantity`/`totalUnit` faltan y se intenta crear/ajustar un segmento o descarga parcial, el backend responde `CARGO_TOTAL_REQUIRED` (422, BR-042) y el panel muestra la acción de definir el total; la fila residual se oculta en los estados loading/empty/error del resto del panel para no mezclar datos no disponibles con datos cargados.
 - **Accesibilidad**: tabla semántica (`caption`, `th scope="col"`, `aria-sort` en cantidad), cantidad con unidad legible, total de la carga anunciado, acciones con labels explícitos, `aria-live="polite"` al egresar/ajustar; la fila «En camión» es texto informativo (`aria-label` "Residual en camión: 40 de 100 u"), sin semántica de alerta (BR-042).
-- **Reutilización**: alta (detalle de carga, detalle de ubicación, panel del mapa). Feature dueño: `features/cargas` — promovible a `shared/` si lo usan 3+ features (regla §7).
+- **Reutilización**: alta (detalle de carga, detalle de ubicación, panel del mapa). Feature dueño: `features/cargos` — promovible a `shared/` si lo usan 3+ features (regla §7).
 
 ### 6.18 LocationOccupancyCard
 - **Propósito**: tarjeta de capacidad/ocupación de una ubicación (BR-033/035/040): capacidad configurada, ocupada, disponible y % ocupado en la unidad compatible (m², m³, pallets, t, %, u). Valores provistos por el backend (`GET /locations/:id/capacity`); **nunca calculados en el cliente**. Incluye `CapacityIndicator` y señal de sobreocupación administrativa (BR-036, flag `allowOverOccupation` — OQ-043).
@@ -203,7 +203,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Outputs**: ninguno (la edición de capacidad es ADMIN vía planos/configuración — BR-011/020).
 - **Estados visuales**: loading (skeleton), empty (capacidad UNLIMITED o sin datos → texto "Ilimitado"), error (reintento), normal; variante danger con patrón cuando hay sobreocupación (BR-036/OQ-043).
 - **Accesibilidad**: `role="meter"` con `aria-valuenow/min/max` y `aria-valuetext` ("80 de 100 m² · disponibles 20 m²"); texto + color (WCAG 1.4.1); contraste AA.
-- **Reutilización**: alta (detalle de ubicación, mapa/panel lateral, dashboard). Feature dueño: `features/ubicaciones`.
+- **Reutilización**: alta (detalle de ubicación, mapa/panel lateral, dashboard). Feature dueño: `features/locations`.
 
 ## 7. Componentes propuestos (especificación resumida)
 
