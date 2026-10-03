@@ -105,7 +105,7 @@ Referencia canónica: `frontend/COMPONENTS.md` §6.6–6.10 (contratos de inputs
 | `MapLegend` | Leyenda obligatoria (MASTER-SPEC §13): colores/patrones/íconos/estados, nunca solo color. |
 | `LocationCard` | Panel lateral al seleccionar una ubicación: nombre, capacidad, ocupación, % ocupado, cargas presentes, alertas y movimientos recientes (§5.8); base de la alternativa accesible del mapa. |
 
-**Flujo de datos** (FRONTEND-ARCHITECTURE.md §5.4): `features/mapa-operativo/` (state con signals) → `GET /api/v1/maps/:id` (layout, datos estructurados) + `GET /api/v1/locations` con `includeCapacity` (ocupación) → derivados `computed` (`locationVisuals`, colores por estado, percent de capacidad) → template SVG. Mutaciones de carga (drag → movimiento) pasan SIEMPRE por el store → HTTP → backend (BR-009; el SVG nunca muta dominio).
+**Flujo de datos** (FRONTEND-ARCHITECTURE.md §5.4): `features/operational-map/` (state con signals) → `GET /api/v1/maps/:id` (layout, datos estructurados) + `GET /api/v1/locations` con `includeCapacity` (ocupación) → derivados `computed` (`locationVisuals`, colores por estado, percent de capacidad) → template SVG. Mutaciones de carga (drag → movimiento) pasan SIEMPRE por el store → HTTP → backend (BR-009; el SVG nunca muta dominio).
 
 **Estado y versionado**: si el plano cambia (`Map.version` mayor que la versión cacheada), el store re-sincroniza y lo comunica (evita operar sobre un layout obsoleto — decisión de UX en MAP-UX).
 

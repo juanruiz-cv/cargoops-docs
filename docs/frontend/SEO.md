@@ -54,13 +54,13 @@ CargoOps es una aplicación corporativa de **acceso restringido**: el único acc
 
 ### 5.4 robots.txt y sitemap
 
-- **robots.txt**: `User-agent: *` + `Disallow: /` (todo exige autenticación) + referencia a `/sitemap.xml` solo si existe. Si hubiera landing pública futura: `Disallow` selectivo de rutas autenticadas (`/dashboard`, `/cargas`, `/mapa-operativo`, `/planos`, `/historial`, `/alertas`, `/auditoria`, `/configuracion`, `/usuarios`, `/roles`, `/camiones`) y acceso a las públicas.
+- **robots.txt**: `User-agent: *` + `Disallow: /` (todo exige autenticación) + referencia a `/sitemap.xml` solo si existe. Si hubiera landing pública futura: `Disallow` selectivo de rutas autenticadas (`/dashboard`, `/cargos`, `/operational-map`, `/maps`, `/history`, `/alerts`, `/audit`, `/settings`, `/users`, `/roles`, `/trucks`) y acceso a las públicas.
 - **sitemap.xml**: solo páginas públicas indexables → en v1, ausente o vacío (flag DP-SEO-01). Con landing futura: incluir solo las públicas (login no va al sitemap).
 - Generación estática en build/deploy (no runtime).
 
 ### 5.5 URLs semánticas
 
-- Rutas kebab-case descriptivas ya definidas en `ROUTING.md` (`/mapa-operativo`, `/cargas/:id`); sin parámetros crípticos visibles; query params de filtros legibles (`?estado=STORED&pagina=2`).
+- Rutas kebab-case descriptivas ya definidas en `ROUTING.md` (`/operational-map`, `/cargos/:id`); sin parámetros crípticos visibles; query params de filtros legibles (`?estado=STORED&pagina=2`).
 - IDs de carga alfanuméricos en la URL con encoding sistemático (códigos con `/`, MASTER-SPEC §4.4 — ROUTING §5.4).
 
 ### 5.6 HTML semántico
