@@ -15,7 +15,7 @@ Aplicación corporativa de acceso restringido: el único acceso público en v1 e
 
 - R1: Guards = UX únicamente (BR-009); jamás sustituyen la autorización backend.
 - R2: Lazy loading por feature; sin `PreloadAllModules`: precarga selectiva — tras el login se precargan `dashboard` y `cargas`; el mapa operativo se descarga solo al navegar a `/operational-map` (chunk pesado, ADR-006; FRONTEND-ARCHITECTURE §5.5).
-- R3: URLs semánticas y estables (kebab-case; rutas visibles en español para el usuario) con deep-link de filtros vía query params (COMPONENTS §6.5).
+- R3: URLs semánticas y estables (kebab-case; rutas en inglés) con deep-link de filtros vía query params (COMPONENTS §6.5).
 - R4: Standalone components; cada feature expone su `routes.ts` (FRONTEND-ARCHITECTURE §5.5).
 - R5: Los errores de red/401/403 se manejan con el flujo de interceptors (FRONTEND-ARCHITECTURE §5.6), no con rutas ad-hoc.
 - R6: Los guards no modelan la máquina de estados de CargoStatus (BR-016): sin lógica de negocio en rutas.
@@ -49,9 +49,9 @@ Aplicación corporativa de acceso restringido: el único acceso público en v1 e
 | `/maps/edit` | editor de planos | lazy | `auth` + `map.edit` + `feature-flag` (OQ-015 resuelta: editor fuera de v1) | `app-shell` | ADMIN |
 | `/history` | `features/history` | lazy | `auth` | `app-shell` | VIEWER+ |
 | `/alerts` | `features/alerts` | lazy | `auth` | `app-shell` | VIEWER+ |
-| `/auditoria` | `features/auditoria` | lazy | `auth` + `audit.read` | `app-shell` | ADMIN |
-| `/configuracion` | `features/configuracion` | lazy | `auth` + permiso de configuración (código por definir — DP-ROU-04) | `app-shell` | ADMIN |
-| `/usuarios` | `features/usuarios` | lazy | `auth` + `users.manage` | `app-shell` | ADMIN |
+| `/audit` | `features/audit` | lazy | `auth` + `audit.read` | `app-shell` | ADMIN |
+| `/settings` | `features/settings` | lazy | `auth` + permiso de configuración (código por definir — DP-ROU-04) | `app-shell` | ADMIN |
+| `/users` | `features/users` | lazy | `auth` + `users.manage` | `app-shell` | ADMIN |
 | `/roles` | `features/roles` | lazy | `auth` + `users.manage` (o permiso de permisos, por definir — DP-ROU-04) | `app-shell` | ADMIN |
 | `/not-found` | `pages/not-found-page` | raíz | — | según sesión (auth-layout o app-shell) | pública/autenticado |
 | `/forbidden` | `pages/forbidden-page` | raíz | — | `app-shell` | autenticado sin permiso |
@@ -60,7 +60,7 @@ Aplicación corporativa de acceso restringido: el único acceso público en v1 e
 Notas:
 - Orden de declaración: rutas estáticas antes que paramétricas (`/cargos/new` antes de `/cargos/:id`).
 - `returnUrl`: el guard de auth redirige a `/login?returnUrl=…` y restaura la navegación tras autenticar (FRONTEND-ARCHITECTURE §5.6).
-- El detalle de movimiento (deep-link desde `MovementTimeline`, SCREENS §4): ruta hija `/cargos/:id/movimientos/:movId` vs diálogo con URL — **OQ-035 resuelta (2026-09-24): ruta hija deep-link** `/cargos/:id/movimientos/:movId` (permalink accesible y compartible).
+- El detalle de movimiento (deep-link desde `MovementTimeline`, SCREENS §4): ruta hija `/cargos/:id/movements/:movId` vs diálogo con URL — **OQ-035 resuelta (2026-09-24): ruta hija deep-link** `/cargos/:id/movements/:movId` (permalink accesible y compartible).
 
 ### 5.2 Layouts
 
@@ -79,16 +79,16 @@ Notas:
 
 ```ts
 // Ilustración (no producción): routes.ts de features/cargos
-export const CARGAS_ROUTES: Routes = [
-  { path: '', component: CargasListPage, canActivate: [authGuard] },
-  { path: 'nueva', component: CargasNewPage, canActivate: [authGuard, permissionGuard('cargo.create')] },
-  { path: ':id', component: CargasDetailPage, canActivate: [authGuard] },
-  { path: ':id/editar', component: CargasEditPage, canActivate: [authGuard, permissionGuard('cargo.update')] },
+export const cargosRoutes: Routes = [
+  { path: '', component: CargoListPage, canActivate: [authGuard] },
+  { path: 'new', component: CargoNewPage, canActivate: [authGuard, permissionGuard('cargo.create')] },
+  { path: ':id', component: CargoDetailPage, canActivate: [authGuard] },
+  { path: ':id/edit', component: CargoEditPage, canActivate: [authGuard, permissionGuard('cargo.update')] },
 ];
 
 // Ilustración (no producción): routes.ts de features/locations
-export const UBICACIONES_ROUTES: Routes = [
-  { path: ':id', component: UbicacionesDetailPage, canActivate: [authGuard] },
+export const locationsRoutes: Routes = [
+  { path: ':id', component: LocationDetailPage, canActivate: [authGuard] },
 ];
 ```
 
@@ -134,9 +134,9 @@ export const UBICACIONES_ROUTES: Routes = [
 
 | ID | Pregunta | Relación |
 | --- | --- | --- |
-| DP-ROU-01 | ~~Deep-link a detalle de movimiento: ruta hija `/cargos/:id/movimientos/:movId` vs diálogo con URL opcional~~ → **RESUELTA (OQ-035, 2026-09-24)**: **ruta hija deep-link** `/cargos/:id/movimientos/:movId` (SCREENS exige permalink accesible y compartible) | SCREENS §4 / OQ-035 (resuelta 2026-09-24) |
+| DP-ROU-01 | ~~Deep-link a detalle de movimiento: ruta hija `/cargos/:id/movements/:movId` vs diálogo con URL opcional~~ → **RESUELTA (OQ-035, 2026-09-24)**: **ruta hija deep-link** `/cargos/:id/movements/:movId` (SCREENS exige permalink accesible y compartible) | SCREENS §4 / OQ-035 (resuelta 2026-09-24) |
 | DP-ROU-02 | ~~Ruta y guards del editor de planos según alcance de OQ-015~~ → **RESUELTA (OQ-015, 2026-09-24)**: mapa es **vista estática** en v1 (lectura + selección + hover); **sin editor visual** en v1 → ruta `/maps/edit` detrás de `feature-flag` (fuera de v1) | OQ-015 (resuelta 2026-09-24) |
 | DP-ROU-03 | ~~`features/trucks` no está listado en FRONTEND-ARCHITECTURE §5.3 pero SCREENS/MASTER-SPEC lo requieren → este documento asume feature propia (`/trucks`)~~ → **RESUELTA (2026-09-23, ID-005)**: `features/trucks/` incorporado a FRONTEND-ARCHITECTURE §5.3 | FRONTEND-ARCHITECTURE §5.3 / SCREENS |
-| DP-ROU-04 | Códigos de permiso exactos para `/configuracion`, `/roles` y `cargo.update`/`truck.create` (la matriz de seeds de ADR-009 la fija el grupo W2/W5) | 🔶 Residual local (ADR-009 / W2-W5; ID-006 resuelta) |
+| DP-ROU-04 | Códigos de permiso exactos para `/settings`, `/roles` y `cargo.update`/`truck.create` (la matriz de seeds de ADR-009 la fija el grupo W2/W5) | 🔶 Residual local (ADR-009 / W2-W5; ID-006 resuelta) |
 | DP-ROU-05 | ~~¿Alcance SSR afecta rutas (login pre-renderizado)?~~ → **RESUELTA (OQ-010, 2026-09-24)**: **sin SSR en v1** (PWA mínima, rama A) → login sin pre-render en v1 | OQ-010 / SEO.md (resuelta 2026-09-24) |
 | DP-ROU-06 | ~~El listado `/locations` no está definido en SCREENS.md… ¿se define un listado propio o se mantiene solo el deep-link?~~ → **RESUELTA (OQ-047, 2026-09-24)**: **sí, listado en v1** (`/locations`) con búsqueda/filtros + deep-link `/locations/:id` desde el mapa y listados | SCREENS (W6) / OQ-047 (resuelta 2026-09-24) |

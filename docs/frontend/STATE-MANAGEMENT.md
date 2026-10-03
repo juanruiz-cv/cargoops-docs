@@ -76,14 +76,14 @@ export class CargosStore {
 | Preferencias/config de UI | `state/settings.store` | idioma (OQ-012), preferencias personales |
 | Notificaciones/toasts globales | `state/notifications.store` | `ToastHost`, toasts, contador |
 | Alertas activas (multifeature) | `state/alerts.store` | dashboard + alertas + contador del topbar |
-| Listado de cargas + filtros + paginación | `features/cargas/state/cargos.store` | `CargoTable`, `CargoSearch`, `CargoFilters` |
-| Detalle de una carga + movimientos | `features/cargas/state/cargo-detail.store` (o signals de página) | `CargoDetail`, `MovementTimeline` |
-| Distribución de una carga (segmentos M:N) | `features/cargas/state/cargo-locations.store` (entidad normalizada `CargoLocation`) | `DistributionPanel` (modo cargo) |
-| Cargas de una ubicación | `features/ubicaciones/state/location-cargos.store` (entidad normalizada `CargoLocation` agrupada por ubicación) | `LocationCard`, `DistributionPanel` (modo location) |
-| Estado del mapa | `features/mapa-operativo/state/map.store` | selección, hover, viewport, cross-highlight |
-| Ocupación/capacidad por ubicación | `features/ubicaciones/state/occupancy.store` (o signals de página) — valores del backend `GET /locations/:id/capacity`; **no se deriva en el cliente** (BR-033/035) | `LocationOccupancyCard`, `CapacityIndicator`, mapa |
-| Unidad por defecto por tipo de ubicación + override (config BR-041) | `features/ubicaciones/state/location-type-defaults.store` — caché de sesión (fresca como maestros, §5.3); se invalida con `CAPACITY_CHANGE` | `CapacityIndicator`, `DistributionPanel`, formularios de ubicación (unidad efectiva: m² por defecto en Sector, u en Plazoleta/Scanner/Balanza, override por ubicación) |
-| Editor de planos (OQ-015 resuelta: editor fuera de v1) | `features/planos/state/plano-editor.store` | cambios sin guardar, tool activa, snap (undo/redo: DP-SC-07) |
+| Listado de cargas + filtros + paginación | `features/cargos/state/cargos.store` | `CargoTable`, `CargoSearch`, `CargoFilters` |
+| Detalle de una carga + movimientos | `features/cargos/state/cargo-detail.store` (o signals de página) | `CargoDetail`, `MovementTimeline` |
+| Distribución de una carga (segmentos M:N) | `features/cargos/state/cargo-locations.store` (entidad normalizada `CargoLocation`) | `DistributionPanel` (modo cargo) |
+| Cargas de una ubicación | `features/locations/state/location-cargos.store` (entidad normalizada `CargoLocation` agrupada por ubicación) | `LocationCard`, `DistributionPanel` (modo location) |
+| Estado del mapa | `features/operational-map/state/map.store` | selección, hover, viewport, cross-highlight |
+| Ocupación/capacidad por ubicación | `features/locations/state/occupancy.store` (o signals de página) — valores del backend `GET /locations/:id/capacity`; **no se deriva en el cliente** (BR-033/035) | `LocationOccupancyCard`, `CapacityIndicator`, mapa |
+| Unidad por defecto por tipo de ubicación + override (config BR-041) | `features/locations/state/location-type-defaults.store` — caché de sesión (fresca como maestros, §5.3); se invalida con `CAPACITY_CHANGE` | `CapacityIndicator`, `DistributionPanel`, formularios de ubicación (unidad efectiva: m² por defecto en Sector, u en Plazoleta/Scanner/Balanza, override por ubicación) |
+| Editor de planos (OQ-015 resuelta: editor fuera de v1) | `features/maps/state/plano-editor.store` | cambios sin guardar, tool activa, snap (undo/redo: DP-SC-07) |
 | Estado efímero de UI | signal local del componente | dropdown abierto, tooltip, tab activa, acordeón |
 
 Reglas:
