@@ -361,6 +361,8 @@ Derivados de primitivos; detalle de uso y patrones en `MAP-VISUAL-GUIDELINES.md`
 
 > Migración (v0.2, §§62-70): `--map-sector-available|partial|full-*` → `--map-occupancy-normal|warning|danger-*` (mismos valores visuales; identidad preservada; la ocupación ahora aplica a toda ubicación con capacidad, no solo sectores). El anillo de selección conserva #F59E0B con el ajuste WCAG ya propuesto (DP-MV-01: → #D97706, 3.19:1, sin tocar hex base §13). Umbrales canónicos §69: **<70 % normal · 70–90 % warning · >90 % danger** (`--map-occupancy-threshold-*`).
 
+> **Restricción conocida - `#D97706` es dos tokens a la vez.** `--color-warning-hover` (§6.2) y `--map-zone-galpon-stroke` (esta tabla) son el mismo valor literal, así que sobre las piezas del galpón el anillo de selección comparte tono con el borde de zona que ya está dibujado: **la selección no se codifica por tono**, porque el tono no la distingue de nada. La mitigación es el **grosor del trazo**, no el color: 1px en reposo → 2px en hover → 4px al seleccionar, siempre con `non-scaling-stroke`, que se mantiene sobre cualquier fill. Por la misma razón el swatch `state-active` de la leyenda toma prestado un token de zona en lugar de tener uno propio (MAP-VISUAL-GUIDELINES §5.5). No se propone aquí ningún valor de paleta: DP-MV-01 sigue abierta y esa decisión no se cierra en esta tabla. Si la revisión de DP-MV-01 cambia el tono, el anillo de selección se mueve con ella sin tocar nada más.
+
 ### 11.1 Formato de unidades y ocupación
 
 Aplicable a labels del mapa, `CapacityIndicator`, `LocationOccupancyCard` y paneles de distribución (BR-040; ligado a OQ-041/044/045).

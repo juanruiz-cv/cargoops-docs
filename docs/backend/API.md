@@ -282,7 +282,7 @@ Capacidad, ocupación y disponibilidad de la ubicación (BR-033/040; secciones 6
 
 ### 7.2 GET /maps/:id
 - **Query**: `includeElements=true` (default).
-- **200 OK**: `{ "data": { "id": "...", "name": "Predio Principal", "elements": [ { "id": "el-uuid", "locationId": "uuid-s4", "elementType": "LOCATION", "x": 120, "y": 80, "width": 60, "height": 40, "rotation": 0, "zIndex": 1, "fill": "#F59E0B", "stroke": "#0F172A", "labelPosition": "TOP" } ] } }` (dato estructurado, BR-020).
+- **200 OK**: `{ "data": { "id": "...", "name": "Predio Principal", "elements": [ { "id": "el-uuid", "locationId": "uuid-s4", "elementType": "LOCATION", "x": 120, "y": 80, "width": 60, "height": 40, "rotation": 0, "zIndex": 3, "fill": "#F59E0B", "stroke": "#0F172A", "labelPosition": "TOP" } ] } }` (dato estructurado, BR-020).
 - **Errores**: 401; 404 `MAP_NOT_FOUND`.
 
 ### 7.3 PATCH /maps/:id (ADMIN — edición de plano)
