@@ -51,12 +51,12 @@ Mapeo entre el modelo persistido y el visual:
 | (datos de negocio) | `Location` vinculada (`locationId`) | `name`, `code`, `type`, `status`, `capacity`/`capacity_unit`/`occupied_capacity`/`available_capacity` → ocupación, color por estado (BR-033) |
 | `elementType` | `MapElement.elementType` | `LOCATION` \| `LABEL` \| `SHAPE` \| `ZONE` (futuro: RUTA, PUERTA, CAMARA, SENSOR, TRUCK_POS — §7) |
 
-Ejemplo ilustrativo del contrato servido (API.md §7.2):
+Ejemplo ilustrativo del contrato servido (API.md §7.2) - en una pieza `LOCATION` el `zIndex` es 3, la capa de ubicaciones (§5.2, §5.7):
 
 ```json
 { "id": "el-uuid", "locationId": "uuid-s4", "elementType": "LOCATION",
   "x": 120, "y": 80, "width": 60, "height": 40, "rotation": 0,
-  "zIndex": 1, "fill": "#F59E0B", "stroke": "#0F172A",
+  "zIndex": 3, "fill": "#F59E0B", "stroke": "#0F172A",
   "labelPosition": "TOP" }
 ```
 
@@ -126,7 +126,7 @@ Sin implementar en v1, el motor queda preparado para:
 
 ```html
 <!-- Ilustrativo (documentación) — esqueleto declarativo del render SVG -->
-<svg [attr.viewBox]="'0 0 ' + map.width + ' ' + map.height" role="img"
+<svg [attr.viewBox]="'0 0 ' + map.width + ' ' + map.height" role="group"
      [attr.aria-label]="map.name">
   <g class="layer-grid">        <!-- fondo / gridSize -->
   <g class="layer-structure">   <!-- zonas: galpón, plazoleta, áreas especiales -->

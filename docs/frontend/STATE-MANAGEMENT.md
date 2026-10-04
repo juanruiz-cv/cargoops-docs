@@ -83,7 +83,7 @@ export class CargosStore {
 | Estado del mapa | `features/operational-map/state/map.store` | selección, hover, viewport, cross-highlight |
 | Ocupación/capacidad por ubicación | `features/locations/state/occupancy.store` (o signals de página) — valores del backend `GET /locations/:id/capacity`; **no se deriva en el cliente** (BR-033/035) | `LocationOccupancyCard`, `CapacityIndicator`, mapa |
 | Unidad por defecto por tipo de ubicación + override (config BR-041) | `features/locations/state/location-type-defaults.store` — caché de sesión (fresca como maestros, §5.3); se invalida con `CAPACITY_CHANGE` | `CapacityIndicator`, `DistributionPanel`, formularios de ubicación (unidad efectiva: m² por defecto en Sector, u en Plazoleta/Scanner/Balanza, override por ubicación) |
-| Editor de planos (OQ-015 resuelta: editor fuera de v1) | `features/maps/state/plano-editor.store` | cambios sin guardar, tool activa, snap (undo/redo: DP-SC-07) |
+| Editor de planos (OQ-015 resuelta: editor fuera de v1) | `features/maps/state/map-editor.store` | cambios sin guardar, tool activa, snap (undo/redo: DP-SC-07) |
 | Estado efímero de UI | signal local del componente | dropdown abierto, tooltip, tab activa, acordeón |
 
 Reglas:

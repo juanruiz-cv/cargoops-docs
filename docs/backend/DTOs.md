@@ -206,11 +206,13 @@ Regla de servicio: cambiar un default NO modifica `capacityUnit` de ubicaciones 
 | --- | --- | --- |
 | id | string UUID | `@IsOptional()` `@IsUUID('4')` (si viene: update; si no: create) |
 | locationId | string UUID | `@IsUUID('4')` |
-| elementType | string | `@IsIn(['LOCATION','LABEL','POLYGON','PATH'])` default LOCATION |
+| elementType | string | `@IsIn(['LOCATION','LABEL','SHAPE','ZONE'])` default LOCATION |
 | x, y, width, height, rotation, zIndex | number | `@IsNumber()` (x/y requeridos; resto con default) |
 | fill, stroke | string | `@IsOptional()` `@Matches(/^#[0-9A-Fa-f]{6}$/)` |
 | labelPosition | string | `@IsOptional()` `@IsIn(['TOP','BOTTOM','LEFT','RIGHT','CENTER'])` |
 | properties | object | `@IsOptional()` `@IsObject()` |
+
+> **Por qué esto no es un fallo de ejecución**: `elementType` es una columna `varchar(40)` sin restricción y no un enum (DATABASE.md §5.3), así que esta lista no puede desincronizarse del dominio en runtime: la lectura sirve el valor tal como está almacenado. El vocabulario canónico es `LOCATION | LABEL | SHAPE | ZONE` (MAP-ENGINE.md §5.1 y §5.7, igual que DATABASE.md §5.3) y esta tabla era la única que había quedado atrás. El alcance es además un único endpoint, `PATCH /api/v1/maps/:id`, que **no se expone en v1** (OQ-015 resuelta: el mapa es vista estática y el editor visual está diferido; `UpdateMapDto` todavía no está implementado), de modo que el valor de la lista solo importa cuando el editor se construya.
 
 ### 4.8 alerts (módulo alerts)
 
