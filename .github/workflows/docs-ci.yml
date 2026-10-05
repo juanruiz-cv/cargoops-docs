@@ -1,0 +1,33 @@
+name: Docs CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate-docs:
+    name: Validate documentation references
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run citation and section reference validation
+        run: node .github/scripts/validate-citations.mjs
+        # No dependency install step. The script is plain Node.js ESM with zero dependencies.
+        # 
+        # The gate does NOT:
+        # - verify line/section references into sibling repositories
+        #   (cargoops-backend, cargoops-frontend, cargoops-infrastructure) — those
+        #   do not exist on the GitHub runner and are reported as unresolvable by
+        #   design without failing the build.
+        # - verify bare section references (§N) with no document named on the same
+        #   line; they are reported as unverified rather than assumed.
+        # - fix broken references; any finding causes a non-zero exit.
