@@ -31,7 +31,7 @@ Fijar los estándares únicos y obligatorios de CargoOps: calidad de código (Ty
 - Sin `any` explícito ni implícito en código de producción; usar `unknown` + narrowing para datos externos (API, JSONB, env).
 - DTOs y contratos tipados con zod/nestjs (validación en runtime) además del tipo estático; el tipado estático nunca es la única validación (BR-006/BR-016 requieren validación en backend).
 - `!` (non-null assertion) prohibido en la medida de lo posible; justificar por PR. `as` casting solo en fronteras (API/JSON) y con narrowing previo.
-- Tipos de dominio (CargoStatus, LocationType, CapacityType, MovementKind, AlertStatus, AuditAction, §4.3 del MASTER-SPEC) declarados como uniones o enums canónicos únicos, nunca duplicados entre repos: el backend los exporta y el frontend los consume vía DTOs/OpenAPI.
+- Tipos de dominio (CargoStatus, LocationType, QuantityUnit, MovementKind, AlertStatus, AuditAction, §4.3 del MASTER-SPEC) declarados como uniones o enums canónicos únicos, nunca duplicados entre repos: el backend los exporta y el frontend los consume vía DTOs/OpenAPI.
 
 ### 4.2 ESLint
 

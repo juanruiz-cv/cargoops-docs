@@ -296,7 +296,7 @@ Ejemplo de error de negocio en el documento, reutilizado en todos los endpoints 
 - El residual "en camión" se documenta en `CargoResponse` como `inTruckAmount`/`inTruckUnit`, `nullable: true`, con la fórmula en la descripción y la aclaración de que `null` significa "sin total declarado" y no cero (API.md §5.1, BR-042).
 - `LocationCapacity` expone `capacity`, `capacityUnit`, `occupiedCapacity`, `availableCapacity`, `occupancyPercent`, `allowOverOccupation` y `segmentsByUnit[]`; los tres primeros derivados se marcan como tales y `segmentsByUnit` se describe como el desglose que impide sumar unidades incompatibles (BR-033/BR-035, API.md §6.5).
 - La unidad efectiva se documenta con la tabla de defaults por `LocationType` (SECTOR/GALPON → `AREA`; PLAZOLETA/SCANNER/BALANZA → `UNITS`; otros → configurable) y la existencia del override por ubicación gobernado por ADMIN (BR-041, OQ-041).
-- `CapacityType` incluye `UNLIMITED`, que en el schema se documenta como "sin barra, texto *Ilimitado*" y sin validación de capacidad (API-CONVENTIONS §4.15, COMPONENTS §6.12).
+- Capacidad ilimitada: cuando `capacity <= 0` la ubicación no tiene tope (D11 resuelta) — no se valida ocupación y los derivados `availableCapacity`/`capacityPercent` devuelven `null`; el schema lo documenta como "sin barra, texto *Ilimitado*" (API-CONVENTIONS §4.15, COMPONENTS §6.12).
 - Ningún schema declara capacidad autoritativa calculada en el cliente: los agregados de ocupación provienen del backend (BR-009, FRONTEND-ARCHITECTURE §5.4).
 
 ### 5.12 Sincronización con el código y gate de CI
