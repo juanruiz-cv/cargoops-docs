@@ -10,7 +10,7 @@ Catalogar los DTOs de CargoOps con sus campos, tipos y reglas de validación (cl
 
 ## 2. Contexto
 
-En NestJS los DTOs son clases con decoradores de class-validator, transformadas por class-transformer en el `ValidationPipe` global (`whitelist`, `forbidNonWhitelisted`, `transform` — ver `BACKEND-ARCHITECTURE` §5.1). Los enums se referencian de `MASTER-SPEC` §4.3: CargoStatus, LocationType, CapacityType, MovementKind, AlertType, AlertStatus, AuditAction, NotificationChannel. Las validaciones de **negocio** (BR) no viven en los DTOs: viven en services/validators de dominio (ver `VALIDATION.md`). Los DTOs validan **shape y formato**.
+En NestJS los DTOs son clases con decoradores de class-validator, transformadas por class-transformer en el `ValidationPipe` global (`whitelist`, `forbidNonWhitelisted`, `transform` — ver `BACKEND-ARCHITECTURE` §5.1). Los enums se referencian de `MASTER-SPEC` §4.3: CargoStatus, LocationType, QuantityUnit, MovementKind, AlertType, AlertStatus, AuditAction, NotificationChannel. Las validaciones de **negocio** (BR) no viven en los DTOs: viven en services/validators de dominio (ver `VALIDATION.md`). Los DTOs validan **shape y formato**.
 
 **Convención de mensajes**: mensajes de validación en español neutral (UI inicial es-AR, MASTER-SPEC §16), parametrizables vía i18n futura; los códigos de error son estables en inglés (ver `API-CONVENTIONS.md` §5).
 
@@ -166,8 +166,8 @@ Unicidad de patente: constraint DB + traducción P2002 → 409 (ver ERROR-HANDLI
 | code | string | `@IsString()` `@IsNotEmpty()` `@MaxLength(50)` (único, BR análogo a BR-002; ver nota *storage-wins* debajo de la tabla) |
 | type | LocationType | `@IsEnum(LocationType)` |
 | status | LocationStatus | `@IsEnum(['ACTIVE','INACTIVE','MAINTENANCE'])` default ACTIVE |
-| capacity | number | `@IsNumber()` `@Min(0)` (tope de la ubicación; ignorado si `capacityUnit = UNLIMITED`) |
-| capacityUnit | QuantityUnit | `@IsOptional()` `@IsEnum(QuantityUnit)` (UNITS/PALLETS/TONS/CUBIC_METERS/AREA/PERCENT, + UNLIMITED conservado de CapacityType — MASTER-SPEC §4.3). **Opcional (BR-041)**: si se omite, se aplica el **default por LocationType** (SECTOR → `AREA`, PLAZOLETA/SCANNER/BALANZA → `UNITS`, otros → configurable); declararlo explícito = **override por ubicación** (solo ADMIN, audita `CAPACITY_CHANGE`). La respuesta siempre expone la unidad efectiva (§4.12) |
+| capacity | number | `@IsNumber()` `@Min(0)` (tope de la ubicación; **sin tope si `capacity <= 0`** — capacidad ilimitada, D11 resuelta) |
+| capacityUnit | QuantityUnit | `@IsOptional()` `@IsEnum(QuantityUnit)` (UNITS/PALLETS/TONS/CUBIC_METERS/AREA/PERCENT — MASTER-SPEC §4.3; no existe `UNLIMITED`). **Opcional (BR-041)**: si se omite, se aplica el **default por LocationType** (SECTOR → `AREA`, PLAZOLETA/SCANNER/BALANZA → `UNITS`, otros → configurable); declararlo explícito = **override por ubicación** (solo ADMIN, audita `CAPACITY_CHANGE`). La respuesta siempre expone la unidad efectiva (§4.12) |
 | x, y, width, height | number | `@IsNumber()` (coordenadas/elemento visual, opcional en creación) |
 | rotation | number | `@IsOptional()` `@IsNumber()` |
 | color | string | `@IsOptional()` `@Matches(/^#[0-9A-Fa-f]{6}$/)` |

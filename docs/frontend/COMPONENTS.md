@@ -23,7 +23,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 
 | Dependencia | Uso |
 | --- | --- |
-| MASTER-SPEC §4 (enums `CargoStatus`, `LocationType`, `CargoLocationStatus`, `QuantityUnit`, `CapacityType`) | Datos y estados de los componentes (los 18 canónicos incluyen distribución M:N y capacidad por unidad) |
+| MASTER-SPEC §4 (enums `CargoStatus`, `LocationType`, `CargoLocationStatus`, `QuantityUnit`) | Datos y estados de los componentes (los 18 canónicos incluyen distribución M:N y capacidad por unidad) |
 | MASTER-SPEC §10 (envelope API) | Estados de error/empty derivados de respuestas |
 | MASTER-SPEC §13 (tokens) + `frontend/DESIGN-SYSTEM.md` | Apariencia de cada estado |
 | `frontend/ROUTING.md` | Navegación desde componentes (breadcrumbs, links) |
@@ -151,7 +151,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 
 ### 6.12 CapacityIndicator
 - **Propósito**: barra de capacidad de una ubicación **unit-aware** (BR-033/035): usado vs configurado en la misma unidad compatible (m², m³, pallets, t, %, u), % ocupado y umbrales de color. Los valores provienen del backend (`GET /locations/:id/capacity`); **el cliente nunca suma unidades incompatibles** (BR-035; sin conversión en v1 — OQ-044 → BR-048 resuelta). La unidad mostrada es la **unidad efectiva** de la ubicación: `Location.capacityUnit` (override por ubicación, ADMIN) o el default por `LocationType` (BR-041).
-- **Inputs**: `used: number | null`, `capacity: number | null`, `capacityUnit: QuantityUnit` (unidad efectiva — BR-041: AREA, CUBIC_METERS, PALLETS, TONS, PERCENT, UNITS — `CapacityType` alineado, MASTER-SPEC §4.3), `unlimited?: boolean` (CapacityType UNLIMITED), `showLabel?: boolean`, `compact?: boolean`.
+- **Inputs**: `used: number | null`, `capacity: number | null`, `capacityUnit: QuantityUnit` (unidad efectiva — BR-041: AREA, CUBIC_METERS, PALLETS, TONS, PERCENT, UNITS — MASTER-SPEC §4.3; no existe `UNLIMITED`), `unlimited?: boolean` (capacidad sin tope: `capacity <= 0`, D11 resuelta), `showLabel?: boolean`, `compact?: boolean`.
 - **Outputs**: ninguno.
 - **Estados visuales**: normal (success), **70–90 % → warning**, **>90 % → danger** (umbrales canónicos — OQ-046 resuelta), sobre capacidad (danger: la impide el backend salvo `allowOverOccupation` administrativa — BR-036 ampliada/OQ-043 resuelta), unlimited (texto "Ilimitado" sin barra), loading (skeleton), error (ocupación no disponible, con reintento).
 - **Accesibilidad**: `role="meter"` con `aria-valuenow/min/max` y `aria-valuetext` con unidad (p. ej. "80 de 100 m²"); label textual + barra (color nunca único canal, R5 de DESIGN-SYSTEM).
@@ -201,7 +201,7 @@ MASTER-SPEC §11.4 propone 18 componentes canónicos; este inventario los especi
 - **Propósito**: tarjeta de capacidad/ocupación de una ubicación (BR-033/035/040): capacidad configurada, ocupada, disponible y % ocupado en la unidad compatible (m², m³, pallets, t, %, u). Valores provistos por el backend (`GET /locations/:id/capacity`); **nunca calculados en el cliente**. Incluye `CapacityIndicator` y señal de sobreocupación administrativa (BR-036, flag `allowOverOccupation` — OQ-043).
 - **Inputs**: `occupancy: LocationOccupancy` (`capacity`, `capacityUnit`, `occupiedCapacity`, `availableCapacity`, `percentage`, `overOccupied?: boolean`), `isLoading: boolean`, `errorMessage?: string`.
 - **Outputs**: ninguno (la edición de capacidad es ADMIN vía planos/configuración — BR-011/020).
-- **Estados visuales**: loading (skeleton), empty (capacidad UNLIMITED o sin datos → texto "Ilimitado"), error (reintento), normal; variante danger con patrón cuando hay sobreocupación (BR-036/OQ-043).
+- **Estados visuales**: loading (skeleton), empty (capacidad ilimitada `capacity <= 0` o sin datos → texto "Ilimitado"), error (reintento), normal; variante danger con patrón cuando hay sobreocupación (BR-036/OQ-043).
 - **Accesibilidad**: `role="meter"` con `aria-valuenow/min/max` y `aria-valuetext` ("80 de 100 m² · disponibles 20 m²"); texto + color (WCAG 1.4.1); contraste AA.
 - **Reutilización**: alta (detalle de ubicación, mapa/panel lateral, dashboard). Feature dueño: `features/locations`.
 

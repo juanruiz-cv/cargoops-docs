@@ -8,7 +8,7 @@
 
 ## 1. Objetivo
 
-Definir el sistema visual del plano operativo de CargoOps: colores, patrones, íconos, tipografía de labels y reglas de estados para zonas (plazoleta, galpón), **ocupación acumulada de ubicaciones (normal/warning/danger por % ocupado, §69)**, áreas especiales (Scanner, Balanza, Rezago, Secuestro), **marcadores y segmentos de carga (distribución M:N, §§62-70)** y estados de selección con sus paneles (§69). El mapa debe leerse **sin ambigüedad aun sin color** (WCAG 1.4.1) y cumplir contraste AA para texto y ≥3:1 para grafismo informativo.
+Definir el sistema visual del plano operativo de CargoOps: colores, patrones, íconos, tipografía de labels y reglas de estados para zonas (plazoleta, galpón), **ocupación acumulada de ubicaciones (ok/partial/full por % ocupado, §69)**, áreas especiales (Scanner, Balanza, Rezago, Secuestro), **marcadores y segmentos de carga (distribución M:N, §§62-70)** y estados de selección con sus paneles (§69). El mapa debe leerse **sin ambigüedad aun sin color** (WCAG 1.4.1) y cumplir contraste AA para texto y ≥3:1 para grafismo informativo.
 
 ## 2. Contexto
 
@@ -54,7 +54,7 @@ Definir el sistema visual del plano operativo de CargoOps: colores, patrones, í
 | Galpón | `--map-zone-galpon-fill` #FEF3C7 | `--map-zone-galpon-stroke` #D97706 | `--map-zone-galpon-text` #92400E (6.33:1 ✓) | — |
 
 - Los labels de zona usan `--font-weight-semibold`; el código de la zona opcional en formato `--font-family-mono` dentro del label (p. ej. "Sector 4").
-- Los bordes internos entre sectores usan `--map-occupancy-normal-stroke` (línea fina sobre el fill del galpón); el stroke del galpón queda reservado al **perímetro** de la zona, evitando ambigüedad entre límite e interior.
+- Los bordes internos entre sectores usan `--map-occupancy-ok-stroke` (línea fina sobre el fill del galpón); el stroke del galpón queda reservado al **perímetro** de la zona, evitando ambigüedad entre límite e interior.
 - **Bordes de contorno (#CBD5E1 / #D97706: 1.48:1 y 2.84:1 vs sus fills)** no cumplen 3:1 como grafismo informativo: son **decorativos de delimitación**, la identidad la da el label. Regla: ningún borde transporta estado por sí solo (DP-MV-02).
 
 ### 5.2 Estados de ocupación acumulada (toda ubicación con capacidad)
@@ -63,15 +63,15 @@ La ocupación es la suma de los segmentos `CargoLocation.ACTIVE` en unidad compa
 
 | Estado | % ocupado | Fill | Stroke | Patrón | Label (obligatorio) |
 | --- | --- | --- | --- | --- | --- |
-| Normal | 0 ≤ % < 70 | `--map-occupancy-normal-fill` #FFFFFF | `--map-occupancy-normal-stroke` #CBD5E1 | sin patrón | "Sector 4 · 35/100 m² · 35 %" |
-| Warning | 70 ≤ % ≤ 90 | `--map-occupancy-warning-fill` #FEF9C3 | `--map-occupancy-warning-stroke` #A16207 (4.58:1 ✓ vs fill) | hatch suave `--map-pattern-hatch-light` | "Sector 7 · 85/100 m² · 85 %" |
-| Danger | % > 90 | `--map-occupancy-danger-fill` #FEE2E2 | `--map-occupancy-danger-stroke` #DC2626 (3.95:1 ✓ vs fill) | hatch 45° `--map-pattern-hatch` | "Sector 10 · 96/100 m² · 96 % ⚠" |
+| Normal | 0 ≤ % < 70 | `--map-occupancy-ok-fill` #FFFFFF | `--map-occupancy-ok-stroke` #CBD5E1 | sin patrón | "Sector 4 · 35/100 m² · 35 %" |
+| Warning | 70 ≤ % ≤ 90 | `--map-occupancy-partial-fill` #FEF9C3 | `--map-occupancy-partial-stroke` #A16207 (4.58:1 ✓ vs fill) | hatch suave `--map-pattern-hatch-light` | "Sector 7 · 85/100 m² · 85 %" |
+| Danger | % > 90 | `--map-occupancy-full-fill` #FEE2E2 | `--map-occupancy-full-stroke` #DC2626 (3.95:1 ✓ vs fill) | hatch 45° `--map-pattern-hatch` | "Sector 10 · 96/100 m² · 96 % ⚠" |
 
 - Los umbrales sustituyen a la propuesta previa (parcial 1–99 % / lleno ≥100 %) de DP-TK-03/DP-MV-05, ahora alineada a §§62-70 (ver DP actualizada en §9 y DESIGN-TOKENS §16).
 - **Sobreocupación (% > 100)** solo por regla administrativa explícita (BR-036, `allowOverOccupation` + auditoría + observación; OQ-043): la banda danger se mantiene (tinte + hatch + label) y se agrega badge "SOBRECUPACIÓN" + alerta `CAPACITY` (MASTER-SPEC §9). Sin el flag, superar el 100 % es un bloqueo de validación (BR-005), no un estado visual.
 - El label de ocupación ("35/100 m² · 35 %") es **obligatorio en toda ubicación con capacidad** (no-color-only) y usa `--map-zone-galpon-text` #92400E (6.33:1 sobre warning-fill; 5.80:1 sobre danger-fill; 7.09:1 sobre blanco normal — AA ✓, ver §5.6).
 - Danger → además del patrón y el label, `CapacityIndicator` (UI-GUIDELINES §6.8) en el panel/detalle y alerta `CAPACITY` cuando corresponda; nunca pintar la ubicación de un rojo saturado (confunde con secuestro).
-- Capacidad `UNLIMITED` (OQ-009/014/041): sin barra ni patrón; label "Sin límite" en gris `muted-strong`.
+- Capacidad ilimitada (`capacity <= 0`; OQ-009/014/041, D11 resuelta): sin barra ni patrón; label "Sin límite" en gris `muted-strong`.
 - Unidades incompatibles entre carga y ubicación (BR-035; OQ-044): el % no es calculable → el label muestra solo la ocupación por unidad ("3 cargas · 45 t") y el % queda en "—".
 - `Location.status = INACTIVE / MAINTENANCE` (BR-004): no definido aún en `--map-*` → **DP-MV-03** (propuesta: fill `--color-surface-muted` + hatch denso + badge "Inactiva"/"Mantenimiento"; movimientos bloqueados).
 
@@ -190,7 +190,7 @@ Reglas: labels de zona/carga ≥12px (`--map-label-visible-min`); códigos de ca
 
 ## 6. Criterios de aceptación
 
-- [ ] Zonas, estados de ocupación acumulada (normal/warning/danger con umbrales §69 <70/70–90/>90), áreas especiales y marcadores de carga (incluidos segmentos ACTIVE/EXITED) especificados con token + label + ícono/patrón (no-color-only).
+- [ ] Zonas, estados de ocupación acumulada (ok/partial/full con umbrales §69 <70/70–90/>90), áreas especiales y marcadores de carga (incluidos segmentos ACTIVE/EXITED) especificados con token + label + ícono/patrón (no-color-only).
 - [ ] Representaciones M:N cubiertas: una ubicación con N cargas (ocupación acumulada + marcadores múltiples, §5.2) y una carga con N ubicaciones (segmentos con cantidad/%, §5.4.1).
 - [ ] Estados de selección §69: paneles de ubicación (capacidad/ocupación/%/cargas/alertas/movimientos) y de carga (distribución completa) especificados (§5.4.2).
 - [ ] Accesibilidad: ARIA en shapes/paneles, foco navegable, listado alternativo y nunca color-solo (§5.10 — WCAG 2.2 AA / 1.4.1).

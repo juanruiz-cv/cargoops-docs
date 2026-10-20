@@ -112,7 +112,7 @@ Reglas canónicas de la **ampliación 0.2** (secciones 62-70 del prompt maestro 
 | Campo | Valor |
 | --- | --- |
 | **Severidad** | CRÍTICA |
-| **Descripción** | Ningún movimiento ni segmento de distribución puede dejar `occupiedCapacity > capacity` en la ubicación destino. `occupiedCapacity` es **derivado** = Σ de segmentos `CargoLocation` ACTIVOS en unidad compatible (BR-033/BR-035); `availableCapacity = capacity − occupiedCapacity`. `UNLIMITED` no aplica tope. La única vía para exceder es la excepción administrativa explícita de sobreocupación (BR-036, flag `allowOverOccupation` — OQ-043). |
+| **Descripción** | Ningún movimiento ni segmento de distribución puede dejar `occupiedCapacity > capacity` en la ubicación destino. `occupiedCapacity` es **derivado** = Σ de segmentos `CargoLocation` ACTIVOS en unidad compatible (BR-033/BR-035); `availableCapacity = capacity − occupiedCapacity`. Capacidad ilimitada (`capacity <= 0`) no aplica tope. La única vía para exceder es la excepción administrativa explícita de sobreocupación (BR-036, flag `allowOverOccupation` — OQ-043). |
 | **Validación** | Backend: recálculo de `occupiedCapacity` dentro de la transacción con `pg_advisory_xact_lock` por locationId; origen −Δ, destino +Δ (capa 2); unidades compatibles validadas antes de sumar (BR-035) · UI: indicador de ocupación por unidad (CapacityIndicator: ocupado/disponible) antes de mover. |
 | **Mensajes** | `CAPACITY_EXCEEDED` (409) — "La ubicación {name} no admite más carga (ocupado {used}/{capacity} {unit})." · Unidades incompatibles: 422 `UNIT_INCOMPATIBLE` con `details: { unitA, unitB }` (BR-035). |
 | **Notas** | Alineada a la ampliación 0.2 (fuente: secciones 62-70, §4.1 y §4.4-8): `capacityValue`/`capacityUsed` quedan reemplazados por `capacity` + `capacityUnit` + `occupiedCapacity`/`availableCapacity` derivados (`Location`, §4.1). Unidad por defecto por LocationType: **resuelta (BR-041, OQ-041)** — la unidad efectiva de una ubicación es `override` (Location.capacityUnit) ?? default por tipo. Sobreocupación: BR-036/**OQ-043**. Detalle transaccional: BR-030 `[PROPUESTA]`. |
@@ -301,7 +301,7 @@ Reglas canónicas de la **ampliación 0.2** (secciones 62-70 del prompt maestro 
 | Campo | Valor |
 | --- | --- |
 | **Severidad** | CRÍTICA |
-| **Fuente** | Sección 68 (MASTER-SPEC §4.3 `QuantityUnit`/`CapacityType`). |
+| **Fuente** | Sección 68 (MASTER-SPEC §4.3 `QuantityUnit`). |
 | **Descripción** | La capacidad y la ocupación de una ubicación se calculan dentro de una unidad compatible: misma unidad base o PERCENT. No se suman unidades incompatibles (m² + toneladas + pallets) sin conversión. El sistema rechaza la operación y NO convierte en v1 (la conversión requiere altura/densidad — OQ-044). |
 | **Validación** | Backend: normalización de unidad entre segmentos, ubicación y totales antes de cualquier suma (capa 2) · UI: selector de unidad coherente con la unidad de la ubicación destino. |
 | **Mensajes** | `UNIT_INCOMPATIBLE` (422) — "No se puede sumar {unitA} con {unitB} en {location}: unidades incompatibles." (`details: { unitA, unitB }`) |

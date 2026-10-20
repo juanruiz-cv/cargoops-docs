@@ -150,7 +150,7 @@ _Como Operator, quiero asociar una o varias cargas a un camión, para saber qué
 **US-018 — Ver ocupación antes de mover (capacidad, caso crítico)**
 _Como Operator, quiero conocer la ocupación de cada ubicación antes de mover, para elegir destinos con espacio disponible._
 - **Given** una ubicación con capacidad configurada (unidad por OQ-041), **when** la consulto, **then** veo ocupación derivada `occupiedCapacity`/`availableCapacity` en el indicador (CapacityIndicator).
-- **Given** una ubicación con `capacityUnit = UNLIMITED` o `capacity = 0`, **when** consulto su ocupación, **then** el indicador no aplica tope.
+- **Given** una ubicación con capacidad ilimitada (`capacity <= 0`), **when** consulto su ocupación, **then** el indicador no aplica tope.
 - **Given** un destino a capacidad completa, **when** intento mover una carga, **then** el backend rechaza (BR-005) y la UI justifica el rechazo (caso crítico QA §14).
 - **Notas:** FEATURE-012, Fase 4 · OQ-009/OQ-014 (resueltas 2026-09-24: la Plazoleta cuenta camiones — UNITS; Sector/Galpón AREA, BR-041).
 
@@ -276,7 +276,7 @@ _Como Admin, quiero crear/editar/desactivar ubicaciones, para reflejar la config
 _Como Admin, quiero definir el tipo y valor de capacidad de cada ubicación, para que el control de ocupación sea real._
 - **Given** una ubicación, **when** configuro `capacity` y `capacityUnit` (según OQ-041), **then** el `occupiedCapacity` derivado usa esa configuración.
 - **Given** un cambio de capacidad, **when** se guarda, **then** se audita (AuditAction.CAPACITY_CHANGE).
-- **Given** una ubicación con `UNLIMITED`, **when** se configuran movimientos, **then** no se aplica tope de capacidad.
+- **Given** una ubicación con capacidad ilimitada (`capacity <= 0`), **when** se configuran movimientos, **then** no se aplica tope de capacidad.
 - **Notas:** FEATURE-012, Fase 4 · Capacidad por unidad (QuantityUnit) §4.3 · OQ-041/OQ-044.
 
 **US-027 — Revertir un movimiento (caso crítico)**

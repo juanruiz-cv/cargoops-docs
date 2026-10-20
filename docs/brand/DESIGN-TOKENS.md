@@ -1,7 +1,7 @@
 # CargoOps — Design Tokens (DESIGN-TOKENS)
 
 > Grupo: W7 (brand) · Fuente canónica: `docs/MASTER-SPEC.md` (v0.2) · Estado FASE 0: especificación textual.
-> Actualizado 2026-09-23 (v0.2, §§62-70): tokens de ocupación/capacidad por % (normal/warning/danger) alineados a success/warning/danger (MASTER-SPEC §13) y formato de unidades.
+> Actualizado 2026-09-23 (v0.2, §§62-70): tokens de ocupación/capacidad por % (ok/partial/full) alineados a success/warning/danger (MASTER-SPEC §13) y formato de unidades.
 > Este archivo es la **única fuente de valores** (color, tipografía, spacing, radius, sombras, opacity, breakpoints, motion, z-index) para implementación. Ningún hex, tamaño ni duración puede hardcodearse fuera de estos tokens.
 > Formato: tablas listas para traducir a CSS custom properties (bloque de ejemplo en §12). Nombrar en inglés; los comentarios de UI van en español (MASTER-SPEC §16).
 
@@ -148,7 +148,7 @@ Metodología: razón de contraste WCAG = (L1+0.05)/(L2+0.05), luminancia relativ
 | --color-success-hover | #15803D | Hover sobre acciones success (raro en v1) | — |
 | --color-success-text | #15803D | Texto/ícono success sobre claro | 5.01:1 ✓ |
 | --color-success-soft | #F0FDF4 | Fondo de badge/alert success | — |
-| --color-warning | #F59E0B | Alertas, estado PARTIALLY/IN_REVIEW, capacidad ≥90% | fill con texto oscuro ✓ 8.31 |
+| --color-warning | #F59E0B | Alertas, estado PARTIALLY/IN_REVIEW, y alerta de capacidad (umbral de alerta ≥90 %, derivado de `Location.properties.capacityAlertThreshold`). OJO: es el color de la ALERTA de capacidad —distinta de la banda VISUAL de ocupación `full` (>90 %), que usa `--map-occupancy-full-*`—. | fill con texto oscuro ✓ 8.31 |
 | --color-warning-hover | #D97706 | Borde/ícono warning sobre claro (≥3:1) | 3.19:1 ✓ no-texto |
 | --color-warning-text | #B45309 | Texto warning sobre claro | 5.02:1 ✓ |
 | --color-warning-soft | #FFFBEB | Fondo de badge/alert warning | — |
@@ -332,14 +332,16 @@ Derivados de primitivos; detalle de uso y patrones en `MAP-VISUAL-GUIDELINES.md`
 | --map-zone-galpon-fill | #FEF3C7 | Galpón (zona amarilla, §3) |
 | --map-zone-galpon-stroke | #D97706 | Borde galpón |
 | --map-zone-galpon-text | #92400E | Label de sectores/galpón (6.36:1 ✓) |
-| --map-occupancy-normal-fill | #FFFFFF | Ocupación <70 % — normal (§69) |
-| --map-occupancy-normal-stroke | #CBD5E1 | — |
-| --map-occupancy-warning-fill | #FEF9C3 | Ocupación 70–90 % (tinte amarillo suave) |
-| --map-occupancy-warning-stroke | #A16207 | — |
-| --map-occupancy-danger-fill | #FEE2E2 | Ocupación >90 % (tinte rojo suave) |
-| --map-occupancy-danger-stroke | #DC2626 | — |
+| --map-occupancy-ok-fill | #FFFFFF | Ocupación <70 % — normal (§69) |
+| --map-occupancy-ok-stroke | #CBD5E1 | — |
+| --map-occupancy-partial-fill | #FEF9C3 | Ocupación 70–90 % (tinte amarillo suave) |
+| --map-occupancy-partial-stroke | #A16207 | — |
+| --map-occupancy-full-fill | #FEE2E2 | Ocupación >90 % (tinte rojo suave) |
+| --map-occupancy-full-stroke | #DC2626 | — |
 | --map-occupancy-threshold-warning | 70 % | Umbral warning (canónico §69) |
 | --map-occupancy-threshold-danger | 90 % | Umbral danger (canónico §69) |
+| --map-surface-muted | #E2E8F0 | Superficie neutra apagada (skeleton, fill de ubicación INACTIVE/MAINTENANCE — DP-MV-03) |
+| --map-stroke | #CBD5E1 | Trazo neutro por defecto del mapa |
 | --map-segment-exited-stroke | #94A3B8 | Segmento `EXITED` en paneles de distribución (dashed + badge "Salida"; no se pinta en el mapa — DP-MV-07) |
 | --map-scanner-fill | #E0F2FE | Scanner (área especial) |
 | --map-scanner-stroke | #0EA5E9 | — |
@@ -352,14 +354,16 @@ Derivados de primitivos; detalle de uso y patrones en `MAP-VISUAL-GUIDELINES.md`
 | --map-cargo-default | #2563EB | Marcador de carga normal (4.64:1 vs galpón ✓) |
 | --map-cargo-text | #FFFFFF | Código sobre marcador |
 | --map-cargo-selected-ring | #F59E0B | Anillo de selección (2px, offset 2px) |
+| --map-selection | #D97706 | Anillo de selección reservado (DP-MV-01: valor adoptado #D97706, 3.19:1; ver nota de migración) |
 | --map-cargo-alert-ring | #DC2626 | Anillo/ícono de alerta (STALE_30D) |
 | --map-cargo-transit-stroke | #0F172A | Marcador en tránsito (dashed) |
-| --map-pattern-hatch | rgba(15,23,42,0.18) | Hatch de ocupación danger (45°, 2px/6px) |
-| --map-pattern-hatch-light | rgba(15,23,42,0.10) | Hatch de ocupación warning |
+| --map-pattern-hatch | rgba(15,23,42,0.18) | Hatch de ocupación full (45°, 2px/6px) |
+| --map-pattern-hatch-light | rgba(15,23,42,0.10) | Hatch de ocupación partial |
+| --map-pattern-hatch-dense | rgba(15,23,42,0.35) | Hatch denso para INACTIVE/MAINTENANCE (DP-MV-03) |
 | --map-label-visible-min | 12px | Tamaño mínimo de label de zona |
 | --map-cargo-label-zoom | 1.0 | Zoom desde el cual se muestran códigos de carga |
 
-> Migración (v0.2, §§62-70): `--map-sector-available|partial|full-*` → `--map-occupancy-normal|warning|danger-*` (mismos valores visuales; identidad preservada; la ocupación ahora aplica a toda ubicación con capacidad, no solo sectores). El anillo de selección conserva #F59E0B con el ajuste WCAG ya propuesto (DP-MV-01: → #D97706, 3.19:1, sin tocar hex base §13). Umbrales canónicos §69: **<70 % normal · 70–90 % warning · >90 % danger** (`--map-occupancy-threshold-*`).
+> Migración (v0.2, §§62-70): `--map-sector-available|partial|full-*` → `--map-occupancy-ok|partial|full-*` (nombres finalmente adoptados en el código; mismos valores visuales; identidad preservada; la ocupación ahora aplica a toda ubicación con capacidad, no solo sectores). El anillo de selección conserva #F59E0B con el ajuste WCAG ya propuesto en `--map-selection` (DP-MV-01: → #D97706, 3.19:1, sin tocar hex base §13). Umbrales canónicos §69: **<70 % normal · 70–90 % warning · >90 % danger** (`--map-occupancy-threshold-*`).
 
 > **Restricción conocida - `#D97706` es dos tokens a la vez.** `--color-warning-hover` (§6.2) y `--map-zone-galpon-stroke` (esta tabla) son el mismo valor literal, así que sobre las piezas del galpón el anillo de selección comparte tono con el borde de zona que ya está dibujado: **la selección no se codifica por tono**, porque el tono no la distingue de nada. La mitigación es el **grosor del trazo**, no el color: 1px en reposo → 2px en hover → 4px al seleccionar, siempre con `non-scaling-stroke`, que se mantiene sobre cualquier fill. Por la misma razón el swatch `state-active` de la leyenda toma prestado un token de zona en lugar de tener uno propio (MAP-VISUAL-GUIDELINES §5.5). No se propone aquí ningún valor de paleta: DP-MV-01 sigue abierta y esa decisión no se cierra en esta tabla. Si la revisión de DP-MV-01 cambia el tono, el anillo de selección se mueve con ella sin tocar nada más.
 
@@ -381,7 +385,7 @@ Reglas:
 - Capacidad y ocupación **siempre con unidad** ("35/100 m²"); el % es un derivado informativo (semántica según OQ-045) y **solo se muestra si la unidad es compatible** (BR-035; OQ-044): en caso contrario el label muestra "—".
 - Redondeo: % entero en labels del mapa y contadores; 1 decimal en paneles y tablas; cantidades máx. 2 decimales (truncado, no redondeo acumulativo).
 - Números tabulares (`--font-feature-tnum`) en todo indicador numérico de capacidad/ocupación.
-- "Sin límite" (`capacityUnit = UNLIMITED`, OQ-041): sin barra, sin %, label "Sin límite".
+- "Sin límite" (`capacity <= 0`, capacidad ilimitada — D11 resuelta, OQ-041): sin barra, sin %, label "Sin límite".
 - Propuesta de abreviaturas/redondeo adoptada → DP-TK-05 (resuelta 2026-09-24: OQ-041/044/045 cerradas; BR-041/048/049).
 
 ---

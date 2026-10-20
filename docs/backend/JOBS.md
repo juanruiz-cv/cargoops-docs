@@ -164,7 +164,7 @@ OQ-007 se resolvió 2026-09-24 a favor de **Redis + BullMQ en v1** (ADR-012 Acce
 ### 4.13 Job — Alerta de capacidad (BR-033/036, secciones 62-70)
 
 - **Disparo**: cron diario (repeatable), cola `alerts`, timezone del predio (R-04). Umbral configurable por `settings` (p. ej. `capacity.alertThreshold = 0.90` — MASTER-SPEC §9); la regla de sobreocupación quedó resuelta (OQ-043 → BR-036 ampliada: flag `allowOverOccupation` + límite de % extra configurable, default **+10%** + autorización **solo ADMIN** + observación obligatoria + auditoría `CAPACITY_CHANGE`).
-- **Detección**: por ubicación `ACTIVE` con `capacityUnit != 'UNLIMITED'`: `occupiedCapacity` **derivado** = Σ `quantity` de `CargoLocation` ACTIVE en unidad compatible de la ubicación (BR-033; unidades incompatibles NO se suman — BR-035, OQ-044). Se genera `Alert CAPACITY OPEN` cuando `occupiedCapacity ≥ umbral × capacity`, o cuando `allowOverOccupation = true` y `occupiedCapacity > capacity` (sobreocupación, BR-036). NO ejecuta acciones automáticas: la alerta es señal; la resolución es humana con observación (análogo BR-014).
+- **Detección**: por ubicación `ACTIVE` con `capacity > 0` (una ubicación con `capacity <= 0` es ilimitada y se omite — D11 resuelta): `occupiedCapacity` **derivado** = Σ `quantity` de `CargoLocation` ACTIVE en unidad compatible de la ubicación (BR-033; unidades incompatibles NO se suman — BR-035, OQ-044). Se genera `Alert CAPACITY OPEN` cuando `occupiedCapacity ≥ umbral × capacity`, o cuando `allowOverOccupation = true` y `occupiedCapacity > capacity` (sobreocupación, BR-036). NO ejecuta acciones automáticas: la alerta es señal; la resolución es humana con observación (análogo BR-014).
 - **Dedupe**: análogo a STALE_30D — índice único parcial propuesto `(location_id, type = 'CAPACITY') WHERE status = 'OPEN'` (el desglose por unidad en el índice queda descartado: OQ-041 resuelta → BR-041 con unidad efectiva por ubicación; la unidad del índice es la de la ubicación).
 - **Consulta de referencia** (ilustrativa, FASE 0):
 
@@ -174,7 +174,7 @@ SELECT l.id, l.code, l.capacity, l.capacity_unit, l.allow_over_occupation,
                                          AND cl.quantity_unit = l.capacity_unit), 0) AS occupied
 FROM locations l
 LEFT JOIN cargo_location cl ON cl.location_id = l.id
-WHERE l.status = 'ACTIVE' AND l.capacity_unit <> 'UNLIMITED'
+WHERE l.status = 'ACTIVE' AND l.capacity > 0
 GROUP BY l.id;
 ```
 

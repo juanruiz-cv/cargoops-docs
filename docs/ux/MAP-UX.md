@@ -37,7 +37,7 @@ El predio se representa como un **plano de planta (floor plan)** en coordenadas 
 | --- | --- | --- | --- |
 | PLAZOLETA | Izquierda, zona gris | `--map-zone-plazoleta-fill` `#E2E8F0` | Ingreso: cargas `IN_TRUCK` sobre camiones |
 | GALPÓN / DEPÓSITO | Derecha, zona amarilla | `--map-zone-galpon-fill` `#FEF3C7` | Almacenamiento: contiene los Sectores 1–12 |
-| Sectores 1–12 | Dentro del galpón (grid de celdas) | `--map-sector-*-fill` (disponible/parcial/lleno) | Unidad de almacenamiento con capacidad propia |
+| Sectores 1–12 | Dentro del galpón (grid de celdas) | `--map-occupancy-*-fill` (ok/partial/full) | Unidad de almacenamiento con capacidad propia |
 | Scanner | Área especial (azul) | `--map-scanner-fill` `#E0F2FE` | Control documental (`IN_REVIEW`) |
 | Balanza | Área especial (teal) | `--map-balance-fill` `#CCFBF1` | Pesaje (`IN_REVIEW`) |
 | Rezago | Área especial (naranja) | `--map-rezago-fill` `#FFEDD5` | Permanencia excesiva / revisión (`REZAGO`) |
@@ -74,9 +74,9 @@ Principio: **el color estructura, el texto informa, el patrón confirma**. Toda 
 
 | Estado de ubicación | Relleno | Patrón | Borde | Label | Semántica no visual (ARIA) |
 | --- | --- | --- | --- | --- | --- |
-| Disponible | `--map-sector-available-fill` (blanco) | — | `--map-sector-available-stroke` | "Sector N — 3 de 10" | "Disponible: 3 de 10 unidades" |
-| Parcial (1–99 %) | `--map-sector-partial-fill` | `--map-pattern-hatch-light` (trama leve) | `--map-sector-partial-stroke` | "Sector N — 7 de 10" | "Ocupación parcial: 7 de 10" |
-| Lleno (≥ 100 %) | `--map-sector-full-fill` | `--map-pattern-hatch` (trama densa 45°) | `--map-sector-full-stroke` | "Sector N — 10 de 10" | "Lleno: 10 de 10" |
+| Normal (disponible, <70 %) | `--map-occupancy-ok-fill` (blanco) | — | `--map-occupancy-ok-stroke` | "Sector N — 3 de 10" | "Disponible: 3 de 10 unidades" |
+| Warning (70–90 %) | `--map-occupancy-partial-fill` | `--map-pattern-hatch-light` (trama leve) | `--map-occupancy-partial-stroke` | "Sector N — 8 de 10" | "Ocupación alta: 8 de 10" |
+| Danger (>90 % / lleno) | `--map-occupancy-full-fill` | `--map-pattern-hatch` (trama densa 45°) | `--map-occupancy-full-stroke` | "Sector N — 10 de 10" | "Lleno o crítico: 10 de 10" |
 | Inactiva (`ACTIVE=false`) | gris neutro | — | borde discontinuo | nombre + "inactiva" | "Ubicación inactiva — no admite movimientos" (BR-004) |
 | Mantenimiento (`MAINTENANCE`) | gris con franjas diagonales | patrón propio | borde grueso | nombre + "mantenimiento" | "Ubicación en mantenimiento" |
 | Seleccionada (en foco) | conserva su fill | conserva su patrón | anillo `--map-cargo-selected-ring` (2px, offset 2px) + `zIndex` elevado | como siempre | "Seleccionada" |

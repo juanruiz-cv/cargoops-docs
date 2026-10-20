@@ -122,7 +122,7 @@ CargoOps es una plataforma web de gestión operativa de cargas y depósitos en u
 - **Dependencias:** EPIC-002. **Notas técnicas:** Location = abstracción única (§4.4-7); módulo `locations`; BR-004 validado por el servicio de dominio para uso de movements (PHASES P4-H3).
 
 **FEATURE-012 — Capacidad y ocupación** · P0 · US: US-017, US-018
-- **Criterios de aceptación:** [ ] `capacity`/`capacityUnit` configurable por ubicación (OQ-041) · [ ] CapacityCalculator con occupiedCapacity derivado (Σ segmentos activos en unidad compatible, BR-033/035) · [ ] 0 movimientos que excedan `capacity` (BR-005) · [ ] UNLIMITED sin tope · [ ] auditoría CAPACITY_CHANGE.
+- **Criterios de aceptación:** [ ] `capacity`/`capacityUnit` configurable por ubicación (OQ-041) · [ ] CapacityCalculator con occupiedCapacity derivado (Σ segmentos activos en unidad compatible, BR-033/035) · [ ] 0 movimientos que excedan `capacity` (BR-005) · [ ] capacidad ilimitada (`capacity <= 0`) sin tope · [ ] auditoría CAPACITY_CHANGE.
 - **Dependencias:** FEATURE-011, OQ-009, OQ-014. **Notas técnicas:** CapacityIndicator (§11.4); cálculo transaccional con el movimiento (BR-030 [PROPUESTA]); la Plazoleta y su tope de camiones: OQ-014 resuelta (2026-09-24) — limitada en **UNITS/camiones**.
 
 ### EPIC-006 — Movimientos y observaciones (Fase 5)

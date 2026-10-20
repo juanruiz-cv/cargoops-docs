@@ -131,7 +131,7 @@ Reglas para cantidades, capacidad y ocupación (BR-033/035/040; secciones 62-70)
 
 - **Patrón de barra de capacidad** (`CapacityIndicator` / `LocationOccupancyCard`):
   - Barra horizontal con fill semántico: ancho = `occupied / capacity` (idem máxima en sobreocupación, con marcador extra); etiqueta textual obligatoria: "80 de 100 m² · disponibles 20 m²".
-  - `UNLIMITED`: sin barra, texto "Ilimitado".
+  - Capacidad ilimitada (`capacity <= 0`): sin barra, texto "Ilimitado".
   - Umbrales de color sobre tokens semánticos (nunca hex): ocupación normal → `success`; **70–90 % → `warning`** y **>90 % → `danger`** (umbrales canónicos — OQ-046 resuelta 2026-09-24; configurables a futuro); sobreocupación administrativa (`allowOverOccupation` — BR-036 ampliada/OQ-043 resuelta) → `danger` + patrón de franjas (hatch) como refuerzo.
   - La ocupación sobre el mapa usa el namespace `--map-*` con fills `-available`/`-partial`/`-full` (ver §5.5) y los mismos umbrales.
 
